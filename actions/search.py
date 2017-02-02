@@ -16,6 +16,7 @@ class SearchRunner(ESBaseAction):
     def __init__(self, config=None):
         super(SearchRunner, self).__init__(config=config)
         self._iselector = None
+        self._return_object = False
 
     @property
     def iselector(self):
@@ -37,10 +38,12 @@ class SearchRunner(ESBaseAction):
         self.config = EasyDict(kwargs)
         self.set_up_logging()
 
+        self._return_object = kwargs.get('return_object', False)
+
         if action.endswith('.q'):
-            self.simple_search()
+            return self.simple_search()
         else:
-            self.full_search()
+            return self.full_search()
 
     def simple_search(self):
         """Perform URI-based request search.
@@ -55,7 +58,11 @@ class SearchRunner(ESBaseAction):
             logger.error(e.message)
             sys.exit(2)
 
-        self._pp_exit(result)
+        if self._return_object:
+            return True, result
+        else:
+            self._pp_exit(result)
+            return None
 
     def full_search(self):
         """Perform search using Query DSL.
@@ -69,7 +76,11 @@ class SearchRunner(ESBaseAction):
             logger.error(e.message)
             sys.exit(2)
 
-        self._pp_exit(result)
+        if self._return_object:
+            return True, result
+        else:
+            self._pp_exit(result)
+            return None
 
     def _pp_exit(self, data):
         """Print Elastcsearch JSON response and exit.
