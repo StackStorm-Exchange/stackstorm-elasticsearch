@@ -97,4 +97,8 @@ parameters:
     default: false
     description: Connect to Elasticsearch through SSL.
     type: boolean
+  return_object:
+    default: false
+    description: Return object as result instead of stdout.
+    type: boolean
 runner_type: run-python

@@ -1,3 +1,7 @@
+# 0.4.1
+
+Adding support for object return.
+
 # 0.4.0
 
 Migrate to config.schema
