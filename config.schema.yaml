@@ -10,6 +10,18 @@
     secret: false
     required: false
     default: 9200
+  http_auth:
+    description: "Username and password for authentication"
+    type: "string"
+    secret: false
+    required: false
+    default: ""
+  use_ssl:
+    description: "Boolean indicating if SSL must be used or not"
+    type: "boolean"
+    secret: false
+    required: false
+    default: false
   query_window:
     description: "Rolling window size in seconds. Default 30s"
     type: "integer"

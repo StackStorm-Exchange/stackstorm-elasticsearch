@@ -9,6 +9,8 @@ class ElasticsearchCountSensor(PollingSensor):
     def setup(self):
         self.host = self.config.get('host', None)
         self.port = self.config.get('port', None)
+        self.http_auth = self.config.get('http_auth', None)
+        self.use_ssl = self.config.get('use_ssl', False)
         self.query_window = self.config.get('query_window', 60)
         self.query_string = self.config.get('query_string', '{}')
         self.cooldown_multiplier = self.config.get('cooldown_multiplier', 0)
@@ -20,7 +22,7 @@ class ElasticsearchCountSensor(PollingSensor):
         self.es = None
 
         try:
-            self.es = Elasticsearch([{'host': self.host, 'port': self.port}])
+            self.es = Elasticsearch([{'host': self.host, 'port': self.port, 'http_auth': self.http_auth, 'use_ssl': self.use_ssl}])
         except Exception:
             raise
 
