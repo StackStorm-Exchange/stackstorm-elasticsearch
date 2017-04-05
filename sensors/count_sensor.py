@@ -22,7 +22,9 @@ class ElasticsearchCountSensor(PollingSensor):
         self.es = None
 
         try:
-            self.es = Elasticsearch([{'host': self.host, 'port': self.port, 'http_auth': self.http_auth, 'use_ssl': self.use_ssl}])
+            self.es = Elasticsearch([{'host': self.host, 'port': self.port,
+                                    'http_auth': self.http_auth,
+                                    'use_ssl': self.use_ssl}])
         except Exception:
             raise
 
