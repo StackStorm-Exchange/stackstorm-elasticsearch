@@ -1,3 +1,7 @@
+# 0.4.2
+
+Adding http_auth and use_ssl support on count_sensor.
+
 # 0.4.1
 
 Adding support for object return.
