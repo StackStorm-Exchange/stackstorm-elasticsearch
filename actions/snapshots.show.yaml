@@ -87,4 +87,4 @@ parameters:
     default: false
     description: Connect to Elasticsearch through SSL.
     type: boolean
-runner_type: run-python
+runner_type: python-script

@@ -108,4 +108,4 @@ parameters:
     default: true
     description: Wait for snapshot to complete before returning.
     type: boolean
-runner_type: run-python
+runner_type: python-script

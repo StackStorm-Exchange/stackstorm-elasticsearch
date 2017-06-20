@@ -1,3 +1,7 @@
+# 0.5.0
+
+- Updated action `runner_type` from `run-python` to `python-script`
+
 # 0.4.2
 
 Adding http_auth and use_ssl support on count_sensor.
