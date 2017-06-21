@@ -62,7 +62,7 @@ class StaticMetagen(object):
                 "default": False
             }
         },
-        "runner_type": "run-python",
+        "runner_type": "python-script",
         "description": "Run a Meta Action through a generic Runner.",
         "enabled": True,
         "entry_point": "curator_runner.py"}

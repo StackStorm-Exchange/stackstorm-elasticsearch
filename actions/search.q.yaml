@@ -101,4 +101,4 @@ parameters:
     default: false
     description: Return object as result instead of stdout.
     type: boolean
-runner_type: run-python
+runner_type: python-script
