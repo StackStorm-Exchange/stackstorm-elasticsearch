@@ -6,7 +6,7 @@ import logging
 from curator.api.utils import get_version, is_master_node
 
 # Elasticsearch versions supported
-version_max = (2, 3, 6)
+version_max = (2, 4, 5)
 version_min = (1, 0, 0)
 logger = logging.getLogger(__name__)
 
@@ -66,7 +66,7 @@ def get_client(host, port=9200, url_prefix=None, http_auth=None, use_ssl=False,
     Return an Elasticsearch client using the provided parameters
     """
     kwargs = compact_dict({
-        'host': host, 'port': port, 'http_auth': http_auth,
+        'hosts': [host], 'port': port, 'http_auth': http_auth,
         'url_prefix': url_prefix, 'use_ssl': use_ssl,
         'timeout': timeout
     })
