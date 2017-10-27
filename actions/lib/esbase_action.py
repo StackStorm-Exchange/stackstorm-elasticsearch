@@ -1,7 +1,7 @@
 # pylint: disable=no-member
 
 from utils import get_client
-from st2actions.runners.pythonrunner import Action
+from st2common.runners.base_action import Action
 import logging
 
 
