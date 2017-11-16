@@ -1,10 +1,13 @@
 # pylint: disable=no-member
 
 from items_selector import ItemsSelector
-from utils import compact_dict, get_client, chunk_index_list
+from utils import compact_dict, get_client
+from curator.utils import chunk_index_list
 from easydict import EasyDict
+from curator.action.
 from collections import defaultdict
-import curator.api as api
+import elasticsearch
+import curator
 import logging
 import sys
 
@@ -14,10 +17,11 @@ logger = logging.getLogger(__name__)
 class CuratorInvoke(object):
     # Supported curator commands for indices and snapshots.
     SUPPORTS = {
-        'snapshots': ['delete'],
+        'snapshots': ['DeleteSnapshots', 'Snapshot'],
         'indices': [
-            'alias', 'allocation', 'bloom', 'close', 'delete',
-            'open', 'optimize', 'replicas', 'snapshot'
+            'Alias', 'Allocation', 'Close', 'ClusterRouting', 'CreateIndex', 'DeleteIndices',
+            'ForceMerge', 'IndexSettings', 'Open', 'Reindex', 'Replicas',
+            'Restore', 'Rollover', 'Shrink'
         ]
     }
 
@@ -51,26 +55,27 @@ class CuratorInvoke(object):
         disk space. Returns filter working list.
         :rtype: list
         """
-        working_list = self.iselector.fetch(act_on=act_on)
+        # FIXME: Use IndexList (ilo) or iselector.fetch?
+        # working_list = self.iselector.fetch(act_on=act_on)
+        ilo = curator.IndexList(self.client)
 
         # Protect against accidental delete
         if command == 'delete':
             logger.info("Pruning Kibana-related indices to prevent accidental deletion.")
-            working_list = api.utils.prune_kibana(working_list)
+            ilo.filter_kibana()
 
-        # If filter by disk space, filter the working_list by space:
-        if working_list and command == 'delete':
+        # If filter by disk space, filter the ilo by space:
+        if ilo and command == 'delete':
             if self.opts.disk_space:
-                working_list = api.filter.filter_by_space(self.client, working_list,
-                                                          disk_space=float(self.opts.disk_space),
-                                                          reverse=(self.opts.reverse or True))
+                ilo.filter_by_space(disk_space=float(self.opts.disk_space),
+                                    reverse=(self.opts.reverse or True))
 
-        if not working_list:
+        if not ilo:
             logger.error('No %s matched provided args: %s', act_on, self.opts)
             print "ERROR. No {} found in Elasticsearch.".format(act_on)
             sys.exit(99)
 
-        return working_list
+        return ilo
 
     def fetch(self, act_on, on_nofilters_showall=False):
         """
@@ -105,13 +110,14 @@ class CuratorInvoke(object):
         return compact_dict(kwargs)
 
     def _call_api(self, method, *args, **kwargs):
-        """Invoke curator api method call.
+        """Invoke curator action.
         """
-        api_method = api.__dict__.get(method)
 
-        logger.debug("Perfoming api call %s with args: %s, kwargs: %s",
-                     method, args, kwargs)
-        return api_method(self.client, *args, **kwargs)
+        logger.debug("Perfoming do_action", method, args, kwargs)
+
+        f = getattr(curator, method)
+        m = f(*args, **kwargs)
+        return m.do_action()
 
     def command_on_indices(self, command, working_list):
         """Invoke command which acts on indices and perform an api call.
@@ -120,7 +126,7 @@ class CuratorInvoke(object):
         method = 'open_indices' if command == 'open' else command
 
         # List is too big and it will be proceeded in chunks.
-        if len(api.utils.to_csv(working_list)) > 3072:
+        if len(curator.utils.to_csv(working_list)) > 3072:
             logger.warn('Very large list of indices.  Breaking it up into smaller chunks.')
             success = True
             for indices in chunk_index_list(working_list):
@@ -154,7 +160,7 @@ class CuratorInvoke(object):
             raise RuntimeError("Unexpected method `{}.{}'".format('snapshots', command))
 
     def invoke(self, command=None, act_on=None):
-        """Invoke command through translating it curator api call.
+        """Invoke command through translating it to curator api call.
         """
         if command not in self.SUPPORTS[act_on]:
             raise ValueError("Unsupported curator command: {} {}".format(command, act_on))

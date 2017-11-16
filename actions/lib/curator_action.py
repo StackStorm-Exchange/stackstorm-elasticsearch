@@ -2,7 +2,6 @@
 
 from curator_invoke import CuratorInvoke
 from esbase_action import ESBaseAction
-from curator.api.utils import index_closed
 import logging
 import sys
 
@@ -54,6 +53,7 @@ class CuratorAction(ESBaseAction):
             if self.act_on == 'snapshots':
                 print "DRY RUN: {0}: {1}".format(command, item)
             else:
+                # TODO: Rewrite index_closed
                 print "DRY RUN: {0}: {1}{2}".format(command, item, ' (CLOSED)'
                                                     if index_closed(self.client, item) else '')
 

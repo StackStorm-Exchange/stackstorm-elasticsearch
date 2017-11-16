@@ -6,6 +6,6 @@ keywords:
   - elasticsearch
   - curator
   - databases
-version: 0.5.1
+version: 1.0.0
 author : StackStorm, Inc.
 email : info@stackstorm.com

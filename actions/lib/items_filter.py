@@ -1,9 +1,7 @@
 # pylint: disable=no-member
 
 from utils import xstr
-from curator.api.filter import apply_filter
 from easydict import EasyDict
-import curator.api as api
 import sys
 import logging
 
@@ -107,7 +105,7 @@ class ItemsFilter(object):
 
     def _build(self):
         """
-        Build filter accoriding to filtering parameters.
+        Build filter according to filtering parameters.
 
         :rtype: list
         """

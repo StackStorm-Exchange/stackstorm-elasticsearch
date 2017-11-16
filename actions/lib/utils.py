@@ -3,7 +3,7 @@
 import elasticsearch
 import sys
 import logging
-from curator.api.utils import get_version, is_master_node
+from curator.utils import get_version, is_master_node
 
 # Elasticsearch versions supported
 version_max = (2, 4, 5)
