@@ -4,9 +4,7 @@ from items_selector import ItemsSelector
 from utils import compact_dict, get_client
 from curator.utils import chunk_index_list
 from easydict import EasyDict
-from curator.action.
 from collections import defaultdict
-import elasticsearch
 import curator
 import logging
 import sys
@@ -17,11 +15,11 @@ logger = logging.getLogger(__name__)
 class CuratorInvoke(object):
     # Supported curator commands for indices and snapshots.
     SUPPORTS = {
-        'snapshots': ['DeleteSnapshots', 'Snapshot'],
+        'snapshots': ['deletesnapshots', 'snapshot'],
         'indices': [
-            'Alias', 'Allocation', 'Close', 'ClusterRouting', 'CreateIndex', 'DeleteIndices',
-            'ForceMerge', 'IndexSettings', 'Open', 'Reindex', 'Replicas',
-            'Restore', 'Rollover', 'Shrink'
+            'alias', 'allocation', 'close', 'clusterrouting', 'createindex', 'deleteindices',
+            'forcemerge', 'indexsettings', 'open', 'reindex', 'replicas',
+            'restore', 'rollover', 'shrink'
         ]
     }
 
@@ -55,9 +53,8 @@ class CuratorInvoke(object):
         disk space. Returns filter working list.
         :rtype: list
         """
-        # FIXME: Use IndexList (ilo) or iselector.fetch?
-        # working_list = self.iselector.fetch(act_on=act_on)
         ilo = curator.IndexList(self.client)
+        print 'type(ilo) = ' + str(type(ilo))
 
         # Protect against accidental delete
         if command == 'delete':
@@ -91,7 +88,6 @@ class CuratorInvoke(object):
         kwargs = {
             'alias': {'alias': opts['name'], 'remove': opts['remove']},
             'allocation': {'rule': opts['rule']},
-            'bloom': {'delay': opts['delay']},
             'replicas': {'replicas': opts['count']},
             'optimize': {
                 'max_num_segments': opts['max_num_segments'],
@@ -109,24 +105,46 @@ class CuratorInvoke(object):
         }.get(command, {})
         return compact_dict(kwargs)
 
-    def _call_api(self, method, *args, **kwargs):
+    def _call_api(self, method, args, **kwargs):
         """Invoke curator action.
         """
 
-        logger.debug("Perfoming do_action", method, args, kwargs)
+        logger.debug("Performing do_action", method, args, kwargs)
+
+        print "method = " + method
 
         f = getattr(curator, method)
-        m = f(*args, **kwargs)
+        print "f = " + str(f)
+        m = f(args, **kwargs)
+
         return m.do_action()
 
     def command_on_indices(self, command, working_list):
         """Invoke command which acts on indices and perform an api call.
         """
         kwargs = self.command_kwargs(command)
-        method = 'open_indices' if command == 'open' else command
+
+        # TODO: Use one data structure for mdict, SUPPORTS and command_kwargs()
+        mdict = {'alias': 'Alias',
+                 'allocation': 'Allocation',
+                 'close': 'Close',
+                 'clusterrouting': 'ClusterRouting',
+                 'createindex': 'CreateIndex',
+                 'deleteindices': 'DeleteIndices',
+                 'forcemerge': 'ForceMerge',
+                 'indexsettings': 'IndexSettings',
+                 'open': 'Open',
+                 'reindex': 'Reindex',
+                 'replicas': 'Replicas',
+                 'restore': 'Restore',
+                 'rollover': 'Rollover',
+                 'shrink': 'Shrink',
+                 'snapshot': 'Snapshot'}
+
+        method = mdict[command]
 
         # List is too big and it will be proceeded in chunks.
-        if len(curator.utils.to_csv(working_list)) > 3072:
+        if len(curator.utils.to_csv(working_list.indices)) > 3072:
             logger.warn('Very large list of indices.  Breaking it up into smaller chunks.')
             success = True
             for indices in chunk_index_list(working_list):
@@ -162,10 +180,10 @@ class CuratorInvoke(object):
     def invoke(self, command=None, act_on=None):
         """Invoke command through translating it to curator api call.
         """
-        if command not in self.SUPPORTS[act_on]:
-            raise ValueError("Unsupported curator command: {} {}".format(command, act_on))
         if act_on is None:
             raise ValueError("Requires act_on either on `indices' or `snapshots'")
+        if command not in self.SUPPORTS[act_on]:
+            raise ValueError("Unsupported curator command: {} {}".format(command, act_on))
 
         working_list = self._enhanced_working_list(command, act_on)
 

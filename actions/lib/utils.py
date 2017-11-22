@@ -6,7 +6,7 @@ import logging
 from curator.utils import get_version, is_master_node
 
 # Elasticsearch versions supported
-version_max = (2, 4, 5)
+version_max = (7, 0, 0)
 version_min = (1, 0, 0)
 logger = logging.getLogger(__name__)
 
