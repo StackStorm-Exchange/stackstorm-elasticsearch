@@ -54,7 +54,6 @@ class CuratorInvoke(object):
         :rtype: list
         """
         ilo = curator.IndexList(self.client)
-        print 'type(ilo) = ' + str(type(ilo))
 
         # Protect against accidental delete
         if command == 'delete':
@@ -111,13 +110,10 @@ class CuratorInvoke(object):
 
         logger.debug("Performing do_action", method, args, kwargs)
 
-        print "method = " + method
-
         f = getattr(curator, method)
-        print "f = " + str(f)
         m = f(args, **kwargs)
-
-        return m.do_action()
+        m.do_action()
+        return True
 
     def command_on_indices(self, command, working_list):
         """Invoke command which acts on indices and perform an api call.
