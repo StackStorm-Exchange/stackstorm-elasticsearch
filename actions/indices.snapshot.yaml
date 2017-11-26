@@ -84,6 +84,9 @@ parameters:
     default: curator-
     description: Override default prefix.
     type: string
+  source:
+    description: One of 'name', 'creation_date', or 'field_stats'
+    type: string
   suffix:
     description: Include only indices ending with suffix.
     type: string

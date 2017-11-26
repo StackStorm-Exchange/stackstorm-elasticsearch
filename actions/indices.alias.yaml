@@ -71,6 +71,9 @@ parameters:
     default: false
     description: Remove from alias rather than add.
     type: boolean
+  source:
+    description: One of 'name', 'creation_date', or 'field_stats'
+    type: string
   suffix:
     description: Include only indices ending with suffix.
     type: string

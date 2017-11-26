@@ -75,6 +75,9 @@ parameters:
     items:
       type: string
     type: array
+  source:
+    description: One of 'name', 'creation_date', or 'field_stats'
+    type: string
   suffix:
     description: Include only snapshots ending with suffix.
     type: string

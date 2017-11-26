@@ -1,0 +1,148 @@
+---
+description: Restore
+enabled: true
+entry_point: curator_runner.py
+name: indices.restore
+parameters:
+  action:
+    default: indices.restore
+    immutable: true
+    type: string
+  all_indices:
+    description: Do not filter indices.  Act on all indices.
+    type: boolean
+  direction:
+    description: Time to filter, either 'older' or 'younger'
+    type: string
+  dry_run:
+    default: false
+    description: Do not perform any changes.
+    type: boolean
+  epoch:
+    description: An epoch timestamp used in conjunction with unit and unit_count to
+      establish a point of reference for calculations. If not provided, the current
+      time will be used.
+    type: string
+  exclude:
+    description: Index list to exclude from the operation.
+    items:
+      type: string
+    type: array
+  extra_settings:
+    description: Extra settings, including shard count and settings to omit.
+    type: object
+  host:
+    description: Elasticsearch host.
+    required: true
+    type: string
+  http_auth:
+    description: 'Use Basic Authentication ex: user:pass'
+    type: string
+  ignore_unavailable:
+    default: 'False'
+    description: 'Ignore unavailable shards/indices. (default: False)'
+    type: boolean
+  include_aliases:
+    default: 'False'
+    description: 'If set to True, restore aliases with the indices. (default: False)'
+    type: boolean
+  include_global_state:
+    default: 'False'
+    description: 'Restore cluster global state with snapshot. (default: False)'
+    type: boolean
+  index:
+    description: Index list to operate on.
+    items:
+      type: string
+    type: array
+  indices:
+    description: A list of indices to restore. If no indices are provided, it will
+      restore all indices in the snapshot.
+    items:
+      type: string
+    type: array
+  log_level:
+    default: warn
+    description: Log level [critical|error|warning|info|debug].
+    type: string
+  master_only:
+    default: false
+    description: Only operate on elected master node.
+    type: boolean
+  max_wait:
+    description: Maximum number of seconds to wait_for_completion
+    type: integer
+  name:
+    description: Name of the snapshot to restore. If no name is provided, it will
+      restore the most recent snapshot by age.
+    type: string
+  operation_timeout:
+    default: '{{timeout}}'
+    description: Elasticsearch operation timeout in seconds. (It's equal to action
+      timeout).
+    immutable: true
+    type: string
+  partial:
+    default: 'False'
+    description: 'Do not fail if primary shard is unavailable. (default: False)'
+    type: boolean
+  port:
+    description: Elasticsearch port.
+    type: string
+  prefix:
+    description: Include only indices beginning with prefix.
+    type: string
+  regex:
+    description: Provide your own regex, e.g '^prefix-.*-suffix$'.
+    type: string
+  rename_pattern:
+    description: A regular expression pattern with one or more captures, e.g. index_(.+)
+    type: string
+  rename_replacement:
+    description: A target index name pattern with $# numbered references to the captures
+      in rename_pattern, e.g. restored_index_$1
+    type: string
+  skip_repo_fs_check:
+    default: 'False'
+    description: 'Do not validate write access to repository on all cluster nodes
+      before proceeding. (default: False). Useful for shared filesystems where intermittent
+      timeouts can affect validation, but won''t likely affect snapshot success.'
+    type: boolean
+  source:
+    description: One of 'name', 'creation_date', or 'field_stats'
+    type: string
+  suffix:
+    description: Include only indices ending with suffix.
+    type: string
+  time_unit:
+    default: days
+    description: Unit of time to reckon by [hours|days|weeks|months].
+    type: string
+  timeout:
+    default: 600
+    description: Don't wait for action completion more then the specified timeout.
+    type: integer
+  timestring:
+    description: Python strftime string to match your index definition, e.g. 2015.07.15
+      would be %Y.%m.%d.
+    type: string
+  unit_count:
+    description: The number of unit(s). unit_count * unit will be calculated out to
+      the relative number of seconds.
+    type: integer
+  url_prefix:
+    description: Elasticsearch http url prefix.
+    type: string
+  use_ssl:
+    default: false
+    description: Connect to Elasticsearch through SSL.
+    type: boolean
+  wait_for_completion:
+    default: 'True'
+    description: 'Wait (or not) for the operation to complete before returning. (default:
+      True)'
+    type: boolean
+  wait_interval:
+    description: How long in seconds to wait between checks for completion.
+    type: integer
+runner_type: python-script

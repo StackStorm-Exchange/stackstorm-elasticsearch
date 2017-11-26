@@ -1,0 +1,167 @@
+---
+description: Reindex
+enabled: true
+entry_point: curator_runner.py
+name: indices.reindex
+parameters:
+  action:
+    default: indices.reindex
+    immutable: true
+    type: string
+  all_indices:
+    description: Do not filter indices.  Act on all indices.
+    type: boolean
+  direction:
+    description: Time to filter, either 'older' or 'younger'
+    type: string
+  dry_run:
+    default: false
+    description: Do not perform any changes.
+    type: boolean
+  epoch:
+    description: An epoch timestamp used in conjunction with unit and unit_count to
+      establish a point of reference for calculations. If not provided, the current
+      time will be used.
+    type: string
+  exclude:
+    description: Index list to exclude from the operation.
+    items:
+      type: string
+    type: array
+  host:
+    description: Elasticsearch host.
+    required: true
+    type: string
+  http_auth:
+    description: 'Use Basic Authentication ex: user:pass'
+    type: string
+  index:
+    description: Index list to operate on.
+    items:
+      type: string
+    type: array
+  log_level:
+    default: warn
+    description: Log level [critical|error|warning|info|debug].
+    type: string
+  master_only:
+    default: false
+    description: Only operate on elected master node.
+    type: boolean
+  max_wait:
+    description: Maximum number of seconds to wait_for_completion
+    type: integer
+  migration_prefix:
+    description: When migrating, prepend this value to the index name.
+    type: string
+  migration_suffix:
+    description: When migrating, append this value to the index name.
+    type: string
+  operation_timeout:
+    default: '{{timeout}}'
+    description: Elasticsearch operation timeout in seconds. (It's equal to action
+      timeout).
+    immutable: true
+    type: string
+  port:
+    description: Elasticsearch port.
+    type: string
+  prefix:
+    description: Include only indices beginning with prefix.
+    type: string
+  refresh:
+    default: 'True'
+    description: Whether to refresh the entire target index after the operation is
+      complete. (default=True)
+    type: boolean
+  regex:
+    description: Provide your own regex, e.g '^prefix-.*-suffix$'.
+    type: string
+  remote_aws_key:
+    description: AWS IAM Access Key (Only used if the requests-aws4auth python module
+      is installed)
+    type: string
+  remote_aws_region:
+    description: AWS Region (Only used if the requests-aws4auth python module is installed
+    type: string
+  remote_aws_secret_key:
+    description: AWS IAM Secret Access Key (Only used if the requests-aws4auth python
+      module is installed)
+    type: string
+  remote_certificate:
+    description: Path to SSL/TLS certificate
+    type: string
+  remote_client_cert:
+    description: Path to SSL/TLS client certificate (public key)
+    type: string
+  remote_client_key:
+    description: Path to SSL/TLS private key
+    type: string
+  remote_filters:
+    description: Apply these filters to the remote client for remote index selection.
+    type: object
+  remote_ssl_no_validate:
+    description: If True, do not validate the certificate chain. This is an insecure
+      option and you will see warnings in the log output.
+    type: boolean
+  remote_url_prefix:
+    description: Optional url prefix, if needed to reach the Elasticsearch API (i.e.,
+      it's not at the root level)
+    type: string
+  request_body:
+    description: The body to send to elasticsearch.ElasticSearch.reindex(), which
+      must be complete and usable, as Curator will do no vetting of the request_body.
+      If it fails to function, Curator will return an exception.
+    type: string
+  requests_per_second:
+    description: The throttle to set on this request in sub-requests per second. -1
+      means set no throttle as does unlimited which is the only non-float this accepts.
+    type: string
+  slices:
+    description: 'The number of slices this task should be divided into. 1 means the
+      task will not be sliced into subtasks. (default: 1)'
+    type: integer
+  source:
+    description: One of 'name', 'creation_date', or 'field_stats'
+    type: string
+  suffix:
+    description: Include only indices ending with suffix.
+    type: string
+  time_unit:
+    default: days
+    description: Unit of time to reckon by [hours|days|weeks|months].
+    type: string
+  timeout:
+    description: 'The length in seconds each individual bulk request should wait for
+      shards that are unavailable. (default: 60)'
+    type: integer
+  timestring:
+    description: Python strftime string to match your index definition, e.g. 2015.07.15
+      would be %Y.%m.%d.
+    type: string
+  unit_count:
+    description: The number of unit(s). unit_count * unit will be calculated out to
+      the relative number of seconds.
+    type: integer
+  url_prefix:
+    description: Elasticsearch http url prefix.
+    type: string
+  use_ssl:
+    default: false
+    description: Connect to Elasticsearch through SSL.
+    type: boolean
+  wait_for_active_shards:
+    description: 'Sets the number of shard copies that must be active before proceeding
+      with the reindex operation. (default: 1) means the primary shard only. Set to
+      ''all'' for all shard copies, otherwise set to any non-negative value less than
+      or equal to the total number of copies for the shard (number of replicas + 1)'
+    type: string
+  wait_for_completion:
+    default: 'True'
+    description: 'Wait (or not) for the operation to complete before returning. (default:
+      True)'
+    type: boolean
+  wait_interval:
+    description: How long in seconds to wait between checks for completion.
+    type: integer
+runner_type: python-script

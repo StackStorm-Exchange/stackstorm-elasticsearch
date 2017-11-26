@@ -71,6 +71,9 @@ parameters:
     description: Only valid with disk_space. Affects sort order of the indices.  True
       means reverse-alphabetical (if dates are involved, older is deleted first).
     type: boolean
+  source:
+    description: One of 'name', 'creation_date', or 'field_stats'
+    type: string
   suffix:
     description: Include only indices ending with suffix.
     type: string
