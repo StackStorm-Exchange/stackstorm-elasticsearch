@@ -11,10 +11,18 @@ parameters:
   all_snapshots:
     description: Do not filter snapshots.  Act on all snapshots.
     type: boolean
+  direction:
+    description: Time to filter, either 'older' or 'younger'
+    type: string
   dry_run:
     default: false
     description: Do not perform any changes.
     type: boolean
+  epoch:
+    description: An epoch timestamp used in conjunction with unit and unit_count to
+      establish a point of reference for calculations. If not provided, the current
+      time will be used.
+    type: string
   exclude:
     description: Snapshot list to operate on.
     items:
@@ -35,12 +43,6 @@ parameters:
     default: false
     description: Only operate on elected master node.
     type: boolean
-  newer_than:
-    description: Include only snapshots newer than n time_units.
-    type: integer
-  older_than:
-    description: Include only snapshots older than n time_units.
-    type: integer
   operation_timeout:
     default: '{{timeout}}'
     description: Elasticsearch operation timeout in seconds. (It's equal to action
@@ -80,6 +82,10 @@ parameters:
     description: Python strftime string to match your snapshot's definition, e.g.
       20150715020304 would be %Y%m%d%H%M%S.
     type: string
+  unit_count:
+    description: The number of unit(s). unit_count * unit will be calculated out to
+      the relative number of seconds.
+    type: integer
   url_prefix:
     description: Elasticsearch http url prefix.
     type: string

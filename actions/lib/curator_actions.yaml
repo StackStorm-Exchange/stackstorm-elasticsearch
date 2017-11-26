@@ -2,15 +2,17 @@
 - indices.show:
     description: "Show indices"
     parameters:
+      # <-- Indices selection
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
         default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      direction:
+        description: "Time to filter, either 'older' or 'younger'"
+      unit_count:
+        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
+      epoch:
+        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
       prefix:
         description: "Include only indices beginning with prefix."
       suffix:
@@ -32,19 +34,22 @@
       all_indices:
         description: "Do not filter indices.  Act on all indices."
         type: "boolean"
+      # -->
 
 - snapshots.show:
     description: "Show snapshots"
     parameters:
+      # <-- Snapshot selection
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
         default: "days"
-      newer_than:
-        description: "Include only snapshots newer than n time_units."
+      direction:
+        description: "Time to filter, either 'older' or 'younger'"
+      unit_count:
+        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
         type: "integer"
-      older_than:
-        description: "Include only snapshots older than n time_units."
-        type: "integer"
+      epoch:
+        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
       prefix:
         description: "Include only snapshots beginning with prefix."
       suffix:
@@ -69,19 +74,22 @@
       all_snapshots:
         description: "Do not filter snapshots.  Act on all snapshots."
         type: "boolean"
+      # -->
 
 - indices.delete:
     description: "Delete indices"
     parameters:
+      # <-- Indices selection
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
         default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      direction:
+        description: "Time to filter, either 'older' or 'younger'"
+      unit_count:
+        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
+      epoch:
+        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
       prefix:
         description: "Include only indices beginning with prefix."
       suffix:
@@ -110,19 +118,22 @@
         description: "Only valid with disk_space. Affects sort order of the indices.  True means reverse-alphabetical (if dates are involved, older is deleted first)."
         type: "boolean"
         default: true
+      # -->
 
 - snapshots.delete:
     description: "Delete snapshots"
     parameters:
+      # <-- Snapshot selection
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
         default: "days"
-      newer_than:
-        description: "Include only snapshots newer than n time_units."
+      direction:
+        description: "Time to filter, either 'older' or 'younger'"
+      unit_count:
+        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
         type: "integer"
-      older_than:
-        description: "Include only snapshots older than n time_units."
-        type: "integer"
+      epoch:
+        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
       prefix:
         description: "Include only snapshots beginning with prefix."
       suffix:
@@ -185,16 +196,18 @@
         description: "Don't wait for action completion more then the specified timeout."
         default: 21600
         type: "integer"
-      # <-- These are index selection parameters!
+
+      # <-- Indices selection
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
         default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      direction:
+        description: "Time to filter, either 'older' or 'younger'"
+      unit_count:
+        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
+      epoch:
+        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
       prefix:
         description: "Include only indices beginning with prefix."
       suffix:
@@ -233,12 +246,13 @@
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
         default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      direction:
+        description: "Time to filter, either 'older' or 'younger'"
+      unit_count:
+        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
+      epoch:
+        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
       prefix:
         description: "Include only indices beginning with prefix."
       suffix:
@@ -273,53 +287,13 @@
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
         default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      direction:
+        description: "Time to filter, either 'older' or 'younger'"
+      unit_count:
+        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
-      exclude:
-        description: "Index list to exclude from the operation."
-        type: "array"
-        items:
-          type: "string"
-      index:
-        description: "Index list to operate on."
-        type: "array"
-        items:
-          type: "string"
-      all_indices:
-        description: "Do not filter indices.  Act on all indices."
-        type: "boolean"
-      # -->
-
-- indices.bloom:
-    description: "Disable bloom filter cache"
-    parameters:
-      delay:
-        description: "Pause *n* seconds after disabling bloom filter cache of an index."
-        type: "integer"
-        default: 0
-
-      # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
-        type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
+      epoch:
+        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
       prefix:
         description: "Include only indices beginning with prefix."
       suffix:
@@ -346,15 +320,17 @@
 - indices.close:
     description: "Close indices"
     parameters:
+      # <-- Indices selection
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
         default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      direction:
+        description: "Time to filter, either 'older' or 'younger'"
+      unit_count:
+        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
+      epoch:
+        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
       prefix:
         description: "Include only indices beginning with prefix."
       suffix:
@@ -380,15 +356,17 @@
 - indices.open:
     description: "Open indices"
     parameters:
+      # <-- Indices selection
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
         default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      direction:
+        description: "Time to filter, either 'older' or 'younger'"
+      unit_count:
+        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
+      epoch:
+        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
       prefix:
         description: "Include only indices beginning with prefix."
       suffix:
@@ -431,12 +409,13 @@
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
         default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      direction:
+        description: "Time to filter, either 'older' or 'younger'"
+      unit_count:
+        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
+      epoch:
+        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
       prefix:
         description: "Include only indices beginning with prefix."
       suffix:
@@ -472,12 +451,13 @@
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
         default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      direction:
+        description: "Time to filter, either 'older' or 'younger'"
+      unit_count:
+        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
+      epoch:
+        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
       prefix:
         description: "Include only indices beginning with prefix."
       suffix:
