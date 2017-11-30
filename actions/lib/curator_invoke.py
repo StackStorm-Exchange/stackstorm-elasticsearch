@@ -48,31 +48,6 @@ class CuratorInvoke(object):
             self._iselector = ItemsSelector(self.client, **self.opts)
         return self._iselector
 
-    def _enhanced_working_list(self, command, act_on):
-        """Enhance working_list by pruning kibana indices and filtering
-        disk space. Returns filter working list.
-        :rtype: list
-        """
-        ilo = curator.IndexList(self.client)
-
-        # Protect against accidental delete
-        if command == 'delete':
-            logger.info("Pruning Kibana-related indices to prevent accidental deletion.")
-            ilo.filter_kibana()
-
-        # If filter by disk space, filter the ilo by space:
-        if ilo and command == 'delete':
-            if self.opts.disk_space:
-                ilo.filter_by_space(disk_space=float(self.opts.disk_space),
-                                    reverse=(self.opts.reverse or True))
-
-        if not ilo:
-            logger.error('No %s matched provided args: %s', act_on, self.opts)
-            print "ERROR. No {} found in Elasticsearch.".format(act_on)
-            sys.exit(99)
-
-        return ilo
-
     def fetch(self, act_on, on_nofilters_showall=False):
         """
         Forwarder method to indices/snapshots selector.
@@ -112,10 +87,14 @@ class CuratorInvoke(object):
 
         f = getattr(curator, method)
         m = f(args, **kwargs)
+
+        # do_action() raises an exception on failure
         m.do_action()
+
+        # Return a true value to indicate a successful api call
         return True
 
-    def command_on_indices(self, command, working_list):
+    def command_on_indices(self, command, ilo):
         """Invoke command which acts on indices and perform an api call.
         """
         kwargs = self.command_kwargs(command)
@@ -139,18 +118,22 @@ class CuratorInvoke(object):
 
         method = mdict[command]
 
+        print ilo.indices
+
         # List is too big and it will be proceeded in chunks.
-        if len(curator.utils.to_csv(working_list.indices)) > 3072:
+        if len(curator.utils.to_csv(ilo.indices)) > 3072:
             logger.warn('Very large list of indices.  Breaking it up into smaller chunks.')
             success = True
-            for indices in chunk_index_list(working_list):
-                if not self._call_api(method, indices, **kwargs):
+            for indices in chunk_index_list(ilo):
+                try:
+                    self._call_api(method, indices, **kwargs)
+                except Exception:
                     success = False
             return success
         else:
-            return self._call_api(method, working_list, **kwargs)
+            return self._call_api(method, ilo, **kwargs)
 
-    def command_on_snapshots(self, command, working_list):
+    def command_on_snapshots(self, command, ilo):
         """Invoke command which acts on snapshots and perform an api call.
         """
         if command == 'snapshot':
@@ -158,20 +141,88 @@ class CuratorInvoke(object):
             kwargs = self.command_kwargs(command)
             # The snapshot command should get the full (not chunked)
             # list of indices.
-            kwargs['indices'] = working_list
+            kwargs['indices'] = ilo
             return self._call_api(method, **kwargs)
 
         elif command == 'delete':
             method = 'delete_snapshot'
             success = True
-            for s in working_list:
-                if not self._call_api(method, repository=self.opts.repository,
-                                      snapshot=s):
+            for s in ilo:
+                try:
+                    self._call_api(method, repository=self.opts.repository, snapshot=s)
+                except Exception:
                     success = False
             return success
         else:
             # should never get here
             raise RuntimeError("Unexpected method `{}.{}'".format('snapshots', command))
+
+    def _get_filtered_ilo(self, command, act_on):
+        ilo = curator.IndexList(self.client)
+
+        opts = self.opts
+
+        # Protect against accidental delete
+        if command == 'delete':
+            logger.info("Pruning Kibana-related indices to prevent accidental deletion.")
+            ilo.filter_kibana()
+
+        # If filter by disk space, filter the ilo by space:
+        if ilo and command == 'delete':
+            if opts.disk_space:
+                ilo.filter_by_space(disk_space=float(opts.disk_space),
+                                    reverse=(opts.reverse or True))
+
+        if not ilo:
+            logger.error('No %s matched provided args: %s', act_on, opts)
+            print "ERROR. No {} found in Elasticsearch.".format(act_on)
+            sys.exit(99)
+
+        # Timebase filtering
+        if opts.source is not None:
+            # TODO: Check if other required variables used by filter_by_age are defined
+            ilo.filter_by_age(source=opts.source, direction=opts.direction,
+                              timestring=opts.timestring, unit=opts.time_unit,
+                              unit_count=opts.unit_count, unit_count_pattern=None, field=None,
+                              stats_result=None, epoch=None, exclude=False)
+
+        # ilo.filter_by_regex(kind='timestamp', value=opts.timestring, exclude=opts.exclude)
+
+        # Add filtering based on suffix|prefix|regex
+        patternbased = zip(('suffix', 'prefix', 'regex'),
+                           (opts.suffix, opts.prefix, opts.regex))
+
+        for opt, value in patternbased:
+            if value is None:
+                continue
+            ilo.filter_by_regex(kind=opt, value=value, exclude=opts.exclude)
+
+        return ilo
+
+#        if ilo and command == 'allocate':
+#            ilo.filter_allocated(key=None, value=None, allocation_type='require', exclude=True)
+#
+#        if ilo and command == 'close':
+#            ilo.filter_closed(exclude=True)
+#
+#        if ilo and command == 'forcemerge':
+#            ilo.filter_forceMerged(max_num_segments=None, exclude=True)
+#
+#        if ilo and command == 'open':
+#            ilo.filter_opened(exclude=True)
+#
+#        if ilo and command == 'alias':
+#            ilo.filter_by_alias(aliases=None, exclude=False)
+#
+#        ilo.filter_by_count(count=None, reverse=True, use_age=False, pattern=None,
+#                            source='creation_date', timestring=None, field=None, stats_result=None,
+#                            exclude=True)
+#
+#        ilo.filter_period(period_type='relative', source='name', range_from=None,
+#                          range_to=None, date_from=None, date_to=None, date_from_format=None,
+#                          date_to_format=None, timestring=None, unit=None, field=None,
+#                          stats_result='min_value', intersect=False, week_starts_on='sunday',
+#                          epoch=None, exclude=False)
 
     def invoke(self, command=None, act_on=None):
         """Invoke command through translating it to curator api call.
@@ -181,11 +232,12 @@ class CuratorInvoke(object):
         if command not in self.SUPPORTS[act_on]:
             raise ValueError("Unsupported curator command: {} {}".format(command, act_on))
 
-        working_list = self._enhanced_working_list(command, act_on)
+        # Get the list of indices and apply filters
+        ilo = self._get_filtered_ilo(command, act_on)
 
         if act_on == 'indices' and command != 'snapshot':
-            return self.command_on_indices(command, working_list)
+            return self.command_on_indices(command, ilo)
         else:
             # Command on snapshots and snapshot command (which
             # actually has selected indices before).
-            return self.command_on_snapshots(command, working_list)
+            return self.command_on_snapshots(command, ilo)

@@ -20,5 +20,6 @@ class CuratorRunner(CuratorAction):
         })
 
         self.config = EasyDict(kwargs)
+        print self.config
         self.set_up_logging()
         self.do_command()

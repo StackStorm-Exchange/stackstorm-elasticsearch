@@ -62,6 +62,8 @@ class ItemsFilter(object):
         self.act_on = act_on
         result_list = self._apply_closed_timerange(working_list)
 
+        print 'apply filters'
+
         if self.all_items:
             logger.info('Matching all %s. Ignoring parameters other than exclude.', self.act_on)
 

@@ -54,8 +54,8 @@ class CuratorAction(ESBaseAction):
                 print "DRY RUN: {0}: {1}".format(command, item)
             else:
                 # TODO: Rewrite index_closed
-                print "DRY RUN: {0}: {1}{2}".format(command, item, ' (CLOSED)'
-                                                    if index_closed(self.client, item) else '')
+                print "DRY RUN - index_closed"  # : {0}: {1}{2}".format(command, item, ' (CLOSED)'
+                # if index_closed(self.client, item) else '')
 
     def do_show(self):
         """
@@ -94,5 +94,6 @@ class CuratorAction(ESBaseAction):
             logger.info("Job starting: %s %s", self.command, self.act_on)
             logger.debug("Params: %s", self.config)
 
+            print 'self.api.invoke(' + self.command + ')'
             success = self.api.invoke(command=self.command, act_on=self.act_on)
             self.exit_msg(success)
