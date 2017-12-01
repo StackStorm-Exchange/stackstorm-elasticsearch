@@ -59,23 +59,96 @@ class CuratorInvoke(object):
         Return kwargs dict for a specific command options or return empty dict.
         """
         opts = defaultdict(lambda: None, self.opts)
+
         kwargs = {
-            'alias': {'alias': opts['name'], 'remove': opts['remove']},
-            'allocation': {'rule': opts['rule']},
-            'replicas': {'replicas': opts['count']},
-            'optimize': {
-                'max_num_segments': opts['max_num_segments'],
-                'request_timeout': opts['timeout'],
-                'delay': opts['delay']
-            },
-            'snapshot': {
-                'name': opts['name'], 'prefix': opts['snapshot_prefix'],
-                'repository': opts['repository'], 'partial': opts['partial'],
-                'ignore_unavailable': opts['ignore_unavailable'],
-                'include_global_state': opts['include_global_state'],
-                'wait_for_completion': opts['wait_for_completion'],
-                'request_timeout': opts['timeout']
-            }
+            'alias': {'name': opts['name'],
+                      'extra_settings': {},
+                      'remove': opts['remove']},
+            'allocation': {'key': opts['key'],
+                           'value': opts[''],
+                           'allocation_type': opts['allocation_type'],
+                           'wait_for_completion': opts['wait_for_completion'],
+                           'wait_interval': opts['wait_interval'],
+                           'max_wait': opts['max_wait']},
+            'close': {'delete_aliases': opts['delete_aliases']},
+            'clusterrouting': {'routing': opts['routing_type'],
+                               'setting': opts['setting'],
+                               'value': opts['value'],
+                               'wait_for_completion': opts['wait_for_completion'],
+                               'wait_interval': opts['wait_interval'],
+                               'max_wait': opts['max_wait']},
+            'createindex': {'name': opts['name']},
+            'deleteindices': {'master_timeout': opts['master_timeout']},
+            'deletesnapshots': {'retry_interval': opts['retry_interval'],
+                                'retry_count': opts['retry_count']},
+            'forcemerge': {'max_num_segments': opts['max_num_segments'],
+                           'delay': opts['delay']},
+            'indexsettings': {'index_settings': {},
+                              'ignore_unavailable': opts['ignore_unavailable'],
+                              'preserve_existing': opts['preserve_existing']},
+            'reindex': {'request_body': opts['request_body'],
+                        'refresh': opts['refresh'],
+                        'requests_per_second': opts['requests_per_second'],
+                        'slices': opts['slices'],
+                        'timeout': opts['timeout'],
+                        'wait_for_active_shards': opts['wait_for_active_starts'],
+                        'wait_for_completion': opts['wait_for_completion'],
+                        'wait_interval': opts['wait_interval'],
+                        'max_wait': opts['max_wait'],
+                        'remote_url_prefix': opts['remote_url_prefix'],
+                        'remote_ssl_no_validate': opts['remote_ssl_no_validate'],
+                        'remote_certificate': opts['remote_certificate'],
+                        'remote_client_cert': opts['remote_client_cert'],
+                        'remote_client_key': opts['remote_client_key'],
+                        'remote_aws_cert': opts['remote_aws_cert'],
+                        'remote_aws_key': opts['remote_aws_key'],
+                        'remote_aws_region': opts['remote_aws_region'],
+                        'remote_filters': opts['remote_filters'],
+                        'migration_prefix': opts['migration_prefix'],
+                        'migration_suffix': opts['migration_suffix']},
+            'replicas': {'count': opts['count'],
+                         'wait_for_completion': opts['wait_for_completion'],
+                         'wait_interval': opts['wait_interval'],
+                         'max_wait': opts['max_wait']},
+            'restore': {'name': opts['name'],
+                        'indices': [],
+                        'include_aliases': opts['include_alises'],
+                        'ignore_unavailable': opts['ignore_unavailable'],
+                        'include_global_state': opts['include_global_state'],
+                        'partial': opts['partial'],
+                        'rename_pattern': opts['rename_pattern'],
+                        'extra_settings': {},
+                        'wait_for_completion': opts['wait_for_completion'],
+                        'wait_interval': opts['wait_interval'],
+                        'max_wait': opts['max_wait'],
+                        'skip_repo_fs_check': opts['skip_repo_fs_check']},
+            'rollover': {'name': opts['name'],
+                         'conditions': opts['rollover'],
+                         'extra_settings': None or {},
+                         'wait_for_active_shards': opts['wait_for_active_shards']},
+            'shrink': {'shrink_node': opts['shrink_node'],
+                       'node_filters': {},
+                       'number_of_shards': opts['number_of_shards'],
+                       'number_of_replicas': opts['number_of_replicas'],
+                       'shrink_prefix': opts['shrink_prefix'],
+                       'shrink_suffix': opts['shrink_suffix'],
+                       'copy_aliases': opts['copy_aliases'],
+                       'delete_after': opts['delete_after'],
+                       'post_allocation': {},
+                       'wait_for_active_shards': opts['wait_for_active_shards'],
+                       'extra_settings': {},
+                       'wait_for_completion': opts['wait_for_completion'],
+                       'wait_interval': opts['wait_interval'],
+                       'max_wait': opts['max_wait']},
+            'snapshot': {'repository': opts['repository'],
+                         'name': opts['name'],
+                         'wait_for_completion': opts['wait_for_completion'],
+                         'wait_interval': opts['wait_interval'],
+                         'max_wait': opts['max_wait'],
+                         'ignore_unavailable': opts['ignore_unavailable'],
+                         'include_global_state': opts['include_global_state'],
+                         'partial': opts['partial'],
+                         'skip_repo_fs_check': opts['skip_repo_fs_check']}
         }.get(command, {})
         return compact_dict(kwargs)
 
@@ -88,7 +161,7 @@ class CuratorInvoke(object):
         f = getattr(curator, method)
         m = f(args, **kwargs)
 
-        # do_action() raises an exception on failure
+        # NOTE: do_action() raises an exception on failure
         m.do_action()
 
         # Return a true value to indicate a successful api call
@@ -98,6 +171,7 @@ class CuratorInvoke(object):
         """Invoke command which acts on indices and perform an api call.
         """
         kwargs = self.command_kwargs(command)
+        print 'kwargs = ' + str(kwargs)
 
         # TODO: Use one data structure for mdict, SUPPORTS and command_kwargs()
         mdict = {'alias': 'Alias',
@@ -118,14 +192,13 @@ class CuratorInvoke(object):
 
         method = mdict[command]
 
-        print ilo.indices
-
         # List is too big and it will be proceeded in chunks.
         if len(curator.utils.to_csv(ilo.indices)) > 3072:
             logger.warn('Very large list of indices.  Breaking it up into smaller chunks.')
             success = True
             for indices in chunk_index_list(ilo):
                 try:
+                    # FIXME: Replace indices with ilo
                     self._call_api(method, indices, **kwargs)
                 except Exception:
                     success = False
@@ -173,22 +246,18 @@ class CuratorInvoke(object):
                 ilo.filter_by_space(disk_space=float(opts.disk_space),
                                     reverse=(opts.reverse or True))
 
-        if not ilo:
-            logger.error('No %s matched provided args: %s', act_on, opts)
-            print "ERROR. No {} found in Elasticsearch.".format(act_on)
-            sys.exit(99)
-
         # Timebase filtering
         if opts.source is not None:
-            # TODO: Check if other required variables used by filter_by_age are defined
+            # TODO: Check if other required variables used by filter_by_age are required
             ilo.filter_by_age(source=opts.source, direction=opts.direction,
                               timestring=opts.timestring, unit=opts.time_unit,
                               unit_count=opts.unit_count, unit_count_pattern=None, field=None,
                               stats_result=None, epoch=None, exclude=False)
 
-        # ilo.filter_by_regex(kind='timestamp', value=opts.timestring, exclude=opts.exclude)
+        # Regex filtering
+        if opts.timestring is not None:
+            ilo.filter_by_regex(kind='timestamp', value=opts.timestring, exclude=opts.exclude)
 
-        # Add filtering based on suffix|prefix|regex
         patternbased = zip(('suffix', 'prefix', 'regex'),
                            (opts.suffix, opts.prefix, opts.regex))
 
@@ -197,32 +266,41 @@ class CuratorInvoke(object):
                 continue
             ilo.filter_by_regex(kind=opt, value=value, exclude=opts.exclude)
 
-        return ilo
+        if ilo and command == 'close':
+            ilo.filter_closed(exclude=True)
+
+        if ilo and command == 'open':
+            print 'command == open'
+            ilo.filter_opened(exclude=True)
+
+        if ilo and command == 'forcemerge':
+            ilo.filter_forceMerged(max_num_segments=opts.max_num_segments, exclude=True)
+
+# TODO: Need to determine if it makes sense to run the following filters - how should we pass
+# the parameters?
 
 #        if ilo and command == 'allocate':
 #            ilo.filter_allocated(key=None, value=None, allocation_type='require', exclude=True)
 #
-#        if ilo and command == 'close':
-#            ilo.filter_closed(exclude=True)
-#
-#        if ilo and command == 'forcemerge':
-#            ilo.filter_forceMerged(max_num_segments=None, exclude=True)
-#
-#        if ilo and command == 'open':
-#            ilo.filter_opened(exclude=True)
-#
 #        if ilo and command == 'alias':
 #            ilo.filter_by_alias(aliases=None, exclude=False)
 #
-#        ilo.filter_by_count(count=None, reverse=True, use_age=False, pattern=None,
-#                            source='creation_date', timestring=None, field=None, stats_result=None,
-#                            exclude=True)
+#        ilo.filter_by_count(count=opts.count, reverse=opts.reverse, use_age=opts.use_age,
+#                            pattern=opts.pattern, source=opts.source, timestring=opts.timestring,
+#                            field=opts.field, stats_result=opts.stats_result, exclude=opts.exclude)
 #
 #        ilo.filter_period(period_type='relative', source='name', range_from=None,
 #                          range_to=None, date_from=None, date_to=None, date_from_format=None,
 #                          date_to_format=None, timestring=None, unit=None, field=None,
 #                          stats_result='min_value', intersect=False, week_starts_on='sunday',
 #                          epoch=None, exclude=False)
+
+        if not ilo.indices:
+            logger.error('No %s matched provided args: %s', act_on, opts)
+            print "ERROR. No {} found in Elasticsearch.".format(act_on)
+            sys.exit(99)
+
+        return ilo
 
     def invoke(self, command=None, act_on=None):
         """Invoke command through translating it to curator api call.

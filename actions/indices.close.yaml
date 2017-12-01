@@ -11,6 +11,9 @@ parameters:
   all_indices:
     description: Do not filter indices.  Act on all indices.
     type: boolean
+  delete_aliases:
+    description: If True, will delete any associated aliases before closing indices.
+    type: boolean
   direction:
     description: Time to filter, either 'older' or 'younger'
     type: string

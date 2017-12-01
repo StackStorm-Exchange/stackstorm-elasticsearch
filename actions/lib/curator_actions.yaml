@@ -334,6 +334,9 @@
 - indices.close:
     description: "Close indices"
     parameters:
+      delete_aliases:
+        description: "If True, will delete any associated aliases before closing indices."
+        type: "boolean"
       # <-- Indices selection
       time_unit:
         description: "Unit of time to reckon by [hours|days|weeks|months]."
@@ -368,6 +371,7 @@
       all_indices:
         description: "Do not filter indices.  Act on all indices."
         type: "boolean"
+      # -->
 
 - indices.open:
     description: "Open indices"
@@ -406,6 +410,7 @@
       all_indices:
         description: "Do not filter indices.  Act on all indices."
         type: "boolean"
+      # -->
 
 - indices.optimize:
     description: "Optimize indices"
