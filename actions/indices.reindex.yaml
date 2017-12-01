@@ -70,7 +70,7 @@ parameters:
     description: Include only indices beginning with prefix.
     type: string
   refresh:
-    default: 'True'
+    default: true
     description: Whether to refresh the entire target index after the operation is
       complete. (default=True)
     type: boolean
@@ -157,7 +157,7 @@ parameters:
       or equal to the total number of copies for the shard (number of replicas + 1)'
     type: string
   wait_for_completion:
-    default: 'True'
+    default: true
     description: 'Wait (or not) for the operation to complete before returning. (default:
       True)'
     type: boolean

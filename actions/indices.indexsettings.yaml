@@ -68,7 +68,7 @@ parameters:
     description: Include only indices beginning with prefix.
     type: string
   preserve_existing:
-    default: 'False'
+    default: false
     description: Whether to update existing settings. If set to True existing settings
       on an index remain unchanged. The default is False.
     type: boolean

@@ -110,7 +110,7 @@ parameters:
       and if rebalance, it can be 'replicas'.
     type: string
   wait_for_completion:
-    default: 'False'
+    default: false
     description: Wait (or not) for the operation to complete before returning.
     type: boolean
   wait_interval:

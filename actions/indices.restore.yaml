@@ -39,15 +39,15 @@ parameters:
     description: 'Use Basic Authentication ex: user:pass'
     type: string
   ignore_unavailable:
-    default: 'False'
+    default: false
     description: 'Ignore unavailable shards/indices. (default: False)'
     type: boolean
   include_aliases:
-    default: 'False'
+    default: false
     description: 'If set to True, restore aliases with the indices. (default: False)'
     type: boolean
   include_global_state:
-    default: 'False'
+    default: false
     description: 'Restore cluster global state with snapshot. (default: False)'
     type: boolean
   index:
@@ -83,7 +83,7 @@ parameters:
     immutable: true
     type: string
   partial:
-    default: 'False'
+    default: false
     description: 'Do not fail if primary shard is unavailable. (default: False)'
     type: boolean
   port:
@@ -103,7 +103,7 @@ parameters:
       in rename_pattern, e.g. restored_index_$1
     type: string
   skip_repo_fs_check:
-    default: 'False'
+    default: false
     description: 'Do not validate write access to repository on all cluster nodes
       before proceeding. (default: False). Useful for shared filesystems where intermittent
       timeouts can affect validation, but won''t likely affect snapshot success.'
@@ -138,7 +138,7 @@ parameters:
     description: Connect to Elasticsearch through SSL.
     type: boolean
   wait_for_completion:
-    default: 'True'
+    default: true
     description: 'Wait (or not) for the operation to complete before returning. (default:
       True)'
     type: boolean
