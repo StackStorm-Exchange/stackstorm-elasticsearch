@@ -11,21 +11,10 @@ parameters:
   all_snapshots:
     description: Do not filter snapshots.  Act on all snapshots.
     type: boolean
-  direction:
-    description: Time to filter, either 'older' or 'younger'
-    type: string
-  disk_space:
-    description: Delete indices beyond DISK_SPACE gigabytes.
-    type: string
   dry_run:
     default: false
     description: Do not perform any changes.
     type: boolean
-  epoch:
-    description: An epoch timestamp used in conjunction with unit and unit_count to
-      establish a point of reference for calculations. If not provided, the current
-      time will be used.
-    type: string
   exclude:
     description: Snapshot list to operate on.
     items:
@@ -55,47 +44,18 @@ parameters:
   port:
     description: Elasticsearch port.
     type: string
-  prefix:
-    description: Include only snapshots beginning with prefix.
-    type: string
-  regex:
-    description: Provide your own regex, e.g '^prefix-.*-suffix$'.
-    type: string
   repository:
     description: Repository name.
     required: true
     type: string
-  reverse:
-    default: true
-    description: Only valid with disk_space. Affects sort order of the indices.  True
-      means reverse-alphabetical (if dates are involved, older is deleted first).
-    type: boolean
   snapshot:
     description: Include the provided snapshot in the list. A comma separated list.
     items:
       type: string
     type: array
-  source:
-    description: One of 'name', 'creation_date', or 'field_stats'
-    type: string
-  suffix:
-    description: Include only snapshots ending with suffix.
-    type: string
-  time_unit:
-    default: days
-    description: Unit of time to reckon by [hours|days|weeks|months].
-    type: string
   timeout:
     default: 600
     description: Don't wait for action completion more then the specified timeout.
-    type: integer
-  timestring:
-    description: Python strftime string to match your snapshot's definition, e.g.
-      20150715020304 would be %Y%m%d%H%M%S.
-    type: string
-  unit_count:
-    description: The number of unit(s). unit_count * unit will be calculated out to
-      the relative number of seconds.
     type: integer
   url_prefix:
     description: Elasticsearch http url prefix.

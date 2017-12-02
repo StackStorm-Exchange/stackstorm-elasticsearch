@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 class ItemsFilter(object):
     """
     Class implements curator indices/snapshot filtering by name.
-    Supported opts: newer_than, older_than, suffix, prefix, regex, timestring.
+    Supported opts: suffix, prefix, regex, timestring.
     """
 
     def build(self, **opts):

@@ -1,40 +1,31 @@
 ---
-description: Search query (lucene syntax)
+description: Delete indices
 enabled: true
-entry_point: search.py
-name: search.q
+entry_point: curator_runner.py
+name: indices.deleteindices
 parameters:
   action:
-    default: search.q
+    default: indices.deleteindices
     immutable: true
     type: string
-  q:
-    description: Query in the Lucene query string syntax.
-    type: string
-    required: true
-  df:
-    description: The default field to use when no field prefix is defined within the query.
-    type: string
-  default_operator:
-    description: The default operator to be used, can be AND or OR. Defaults to OR.
-    type: string
-  from:
-    description: The starting from index of the hits to return. Defaults to 0.
-    type: integer
-    default: 0
-  size:
-    description: The number of hits to return. Defaults to 10.
-    type: integer
-    default: 10
-  pretty:
-    description: Pretty print JSON response.
-    type: boolean
-    default: False
-
-  # indices selection parameters
   all_indices:
     description: Do not filter indices.  Act on all indices.
     type: boolean
+  direction:
+    description: Time to filter, either 'older' or 'younger'
+    type: string
+  disk_space:
+    description: Delete indices beyond DISK_SPACE gigabytes.
+    type: string
+  dry_run:
+    default: false
+    description: Do not perform any changes.
+    type: boolean
+  epoch:
+    description: An epoch timestamp used in conjunction with unit and unit_count to
+      establish a point of reference for calculations. If not provided, the current
+      time will be used.
+    type: string
   exclude:
     description: Index list to exclude from the operation.
     items:
@@ -60,6 +51,12 @@ parameters:
     default: false
     description: Only operate on elected master node.
     type: boolean
+  operation_timeout:
+    default: '{{timeout}}'
+    description: Elasticsearch operation timeout in seconds. (It's equal to action
+      timeout).
+    immutable: true
+    type: string
   port:
     description: Elasticsearch port.
     type: string
@@ -69,6 +66,14 @@ parameters:
   regex:
     description: Provide your own regex, e.g '^prefix-.*-suffix$'.
     type: string
+  reverse:
+    default: true
+    description: Only valid with disk_space. Affects sort order of the indices.  True
+      means reverse-alphabetical (if dates are involved, older is deleted first).
+    type: boolean
+  source:
+    description: One of 'name', 'creation_date', or 'field_stats'
+    type: string
   suffix:
     description: Include only indices ending with suffix.
     type: string
@@ -77,22 +82,22 @@ parameters:
     description: Unit of time to reckon by [hours|days|weeks|months].
     type: string
   timeout:
-    default: 60
-    description: Elasticsearch operation timeout in seconds.
+    default: 600
+    description: Don't wait for action completion more then the specified timeout.
     type: integer
   timestring:
     description: Python strftime string to match your index definition, e.g. 2015.07.15
       would be %Y.%m.%d.
     type: string
+  unit_count:
+    description: The number of unit(s). unit_count * unit will be calculated out to
+      the relative number of seconds.
+    type: integer
   url_prefix:
     description: Elasticsearch http url prefix.
     type: string
   use_ssl:
     default: false
     description: Connect to Elasticsearch through SSL.
-    type: boolean
-  return_object:
-    default: false
-    description: Return object as result instead of stdout.
     type: boolean
 runner_type: python-script

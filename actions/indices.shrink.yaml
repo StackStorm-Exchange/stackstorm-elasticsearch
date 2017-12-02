@@ -21,18 +21,10 @@ parameters:
     default: true
     description: 'Whether to delete each index after shrinking. (default: True)'
     type: boolean
-  direction:
-    description: Time to filter, either 'older' or 'younger'
-    type: string
   dry_run:
     default: false
     description: Do not perform any changes.
     type: boolean
-  epoch:
-    description: An epoch timestamp used in conjunction with unit and unit_count to
-      establish a point of reference for calculations. If not provided, the current
-      time will be used.
-    type: string
   exclude:
     description: Index list to exclude from the operation.
     items:
@@ -89,12 +81,6 @@ parameters:
       populated, the 'allocation_type', 'key' and 'value' will be applied to the shrunk
       index to re-route it.
     type: object
-  prefix:
-    description: Include only indices beginning with prefix.
-    type: string
-  regex:
-    description: Provide your own regex, e.g '^prefix-.*-suffix$'.
-    type: string
   shrink_node:
     description: The node name to use as the shrink target, or DETERMINISTIC, which
       will use the values in node_filters to determine which node will be the shrink
@@ -107,27 +93,9 @@ parameters:
     default: -shrink
     description: 'Append the value to the shrunk index (default: -shrink)'
     type: string
-  source:
-    description: One of 'name', 'creation_date', or 'field_stats'
-    type: string
-  suffix:
-    description: Include only indices ending with suffix.
-    type: string
-  time_unit:
-    default: days
-    description: Unit of time to reckon by [hours|days|weeks|months].
-    type: string
   timeout:
     default: 600
     description: Don't wait for action completion more then the specified timeout.
-    type: integer
-  timestring:
-    description: Python strftime string to match your index definition, e.g. 2015.07.15
-      would be %Y.%m.%d.
-    type: string
-  unit_count:
-    description: The number of unit(s). unit_count * unit will be calculated out to
-      the relative number of seconds.
     type: integer
   url_prefix:
     description: Elasticsearch http url prefix.

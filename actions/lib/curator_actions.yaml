@@ -3,26 +3,6 @@
     description: "Show indices"
     parameters:
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -42,26 +22,6 @@
     description: "Show snapshots"
     parameters:
       # <-- Snapshot selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only snapshots beginning with prefix."
-      suffix:
-        description: "Include only snapshots ending with suffix."
-      timestring:
-        description: "Python strftime string to match your snapshot's definition, e.g. 20150715020304 would be %Y%m%d%H%M%S."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Snapshot list to operate on."
         type: "array"
@@ -80,30 +40,10 @@
         type: "boolean"
       # -->
 
-- indices.delete:
+- indices.deleteindices:
     description: "Delete indices"
     parameters:
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -117,39 +57,12 @@
       all_indices:
         description: "Do not filter indices.  Act on all indices."
         type: "boolean"
-      disk_space:
-        description: "Delete indices beyond DISK_SPACE gigabytes."
-        type: "string"
-      reverse:
-        description: "Only valid with disk_space. Affects sort order of the indices.  True means reverse-alphabetical (if dates are involved, older is deleted first)."
-        type: "boolean"
-        default: true
       # -->
 
 - snapshots.delete:
     description: "Delete snapshots"
     parameters:
       # <-- Snapshot selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only snapshots beginning with prefix."
-      suffix:
-        description: "Include only snapshots ending with suffix."
-      timestring:
-        description: "Python strftime string to match your snapshot's definition, e.g. 20150715020304 would be %Y%m%d%H%M%S."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Snapshot list to operate on."
         type: "array"
@@ -166,13 +79,7 @@
       all_snapshots:
         description: "Do not filter snapshots.  Act on all snapshots."
         type: "boolean"
-      disk_space:
-        description: "Delete indices beyond DISK_SPACE gigabytes."
-        type: "string"
-      reverse:
-        description: "Only valid with disk_space. Affects sort order of the indices.  True means reverse-alphabetical (if dates are involved, older is deleted first)."
-        type: "boolean"
-        default: true
+      # -->
 
 - indices.snapshot:
     description: "Create snapshot of indices"
@@ -206,26 +113,6 @@
         type: "integer"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -253,26 +140,6 @@
         type: "boolean"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -296,26 +163,6 @@
         required: true
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -337,27 +184,8 @@
       delete_aliases:
         description: "If True, will delete any associated aliases before closing indices."
         type: "boolean"
+
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -377,26 +205,6 @@
     description: "Open indices"
     parameters:
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -429,26 +237,6 @@
         type: "integer"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -473,26 +261,6 @@
         required: true
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -530,26 +298,6 @@
         type: "integer"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -574,28 +322,7 @@
         description: "A dict representing the 'settings' and 'mappings' for the index."
         type: "object"
 
-
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -622,26 +349,6 @@
         type: "integer"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -672,26 +379,6 @@
         type: "boolean"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -763,26 +450,6 @@
         description: "When migrating, append this value to the index name."
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -847,26 +514,6 @@
         type: "boolean"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -900,26 +547,6 @@
         description: "The new index name"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -983,26 +610,6 @@
         type: "integer"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      source:
-        description: "One of 'name', 'creation_date', or 'field_stats'"
-      direction:
-        description: "Time to filter, either 'older' or 'younger'"
-      unit_count:
-        description: "The number of unit(s). unit_count * unit will be calculated out to the relative number of seconds."
-        type: "integer"
-      epoch:
-        description: "An epoch timestamp used in conjunction with unit and unit_count to establish a point of reference for calculations. If not provided, the current time will be used."
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"

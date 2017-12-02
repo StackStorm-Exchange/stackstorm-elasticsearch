@@ -15,18 +15,10 @@ parameters:
     description: Number of replicas the indices should have.
     required: true
     type: integer
-  direction:
-    description: Time to filter, either 'older' or 'younger'
-    type: string
   dry_run:
     default: false
     description: Do not perform any changes.
     type: boolean
-  epoch:
-    description: An epoch timestamp used in conjunction with unit and unit_count to
-      establish a point of reference for calculations. If not provided, the current
-      time will be used.
-    type: string
   exclude:
     description: Index list to exclude from the operation.
     items:
@@ -61,33 +53,9 @@ parameters:
   port:
     description: Elasticsearch port.
     type: string
-  prefix:
-    description: Include only indices beginning with prefix.
-    type: string
-  regex:
-    description: Provide your own regex, e.g '^prefix-.*-suffix$'.
-    type: string
-  source:
-    description: One of 'name', 'creation_date', or 'field_stats'
-    type: string
-  suffix:
-    description: Include only indices ending with suffix.
-    type: string
-  time_unit:
-    default: days
-    description: Unit of time to reckon by [hours|days|weeks|months].
-    type: string
   timeout:
     default: 600
     description: Don't wait for action completion more then the specified timeout.
-    type: integer
-  timestring:
-    description: Python strftime string to match your index definition, e.g. 2015.07.15
-      would be %Y.%m.%d.
-    type: string
-  unit_count:
-    description: The number of unit(s). unit_count * unit will be calculated out to
-      the relative number of seconds.
     type: integer
   url_prefix:
     description: Elasticsearch http url prefix.
