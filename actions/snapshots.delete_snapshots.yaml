@@ -1,0 +1,67 @@
+---
+description: Delete snapshots
+enabled: true
+entry_point: curator_runner.py
+name: snapshots.delete_snapshots
+parameters:
+  action:
+    default: snapshots.delete_snapshots
+    immutable: true
+    type: string
+  all_snapshots:
+    description: Do not filter snapshots.  Act on all snapshots.
+    type: boolean
+  dry_run:
+    default: false
+    description: Do not perform any changes.
+    type: boolean
+  exclude:
+    description: Snapshot list to operate on.
+    items:
+      type: string
+    type: array
+  host:
+    description: Elasticsearch host.
+    required: true
+    type: string
+  http_auth:
+    description: 'Use Basic Authentication ex: user:pass'
+    type: string
+  log_level:
+    default: warn
+    description: Log level [critical|error|warning|info|debug].
+    type: string
+  master_only:
+    default: false
+    description: Only operate on elected master node.
+    type: boolean
+  operation_timeout:
+    default: '{{timeout}}'
+    description: Elasticsearch operation timeout in seconds. (It's equal to action
+      timeout).
+    immutable: true
+    type: string
+  port:
+    description: Elasticsearch port.
+    type: string
+  repository:
+    description: Repository name.
+    required: true
+    type: string
+  snapshot:
+    description: Include the provided snapshot in the list. A comma separated list.
+    items:
+      type: string
+    type: array
+  timeout:
+    default: 600
+    description: Don't wait for action completion more then the specified timeout.
+    type: integer
+  url_prefix:
+    description: Elasticsearch http url prefix.
+    type: string
+  use_ssl:
+    default: false
+    description: Connect to Elasticsearch through SSL.
+    type: boolean
+runner_type: python-script

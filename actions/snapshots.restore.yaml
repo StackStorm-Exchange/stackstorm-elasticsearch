@@ -2,10 +2,10 @@
 description: Restore
 enabled: true
 entry_point: curator_runner.py
-name: indices.restore
+name: snapshots.restore
 parameters:
   action:
-    default: indices.restore
+    default: snapshots.restore
     immutable: true
     type: string
   all_indices:

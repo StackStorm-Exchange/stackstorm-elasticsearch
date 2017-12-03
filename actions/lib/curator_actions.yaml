@@ -40,7 +40,7 @@
         type: "boolean"
       # -->
 
-- indices.deleteindices:
+- indices.delete_indices:
     description: "Delete indices"
     parameters:
       # <-- Indices selection
@@ -59,7 +59,7 @@
         type: "boolean"
       # -->
 
-- snapshots.delete:
+- snapshots.delete_snapshots:
     description: "Delete snapshots"
     parameters:
       # <-- Snapshot selection
@@ -276,7 +276,7 @@
         type: "boolean"
       # -->
 
-- indices.clusterrouting:
+- cluster.cluster_routing:
     description: "Cluster routing"
     parameters:
       setting:
@@ -313,7 +313,7 @@
         type: "boolean"
       # -->
 
-- indices.createindex:
+- indices.create_index:
     description: "Create index"
     parameters:
       name:
@@ -364,7 +364,7 @@
         type: "boolean"
       # -->
 
-- indices.indexsettings:
+- indices.index_settings:
     description: "Index settings"
     parameters:
       index_settings:
@@ -465,7 +465,7 @@
         type: "boolean"
       # -->
 
-- indices.restore:
+- snapshots.restore:
     description: "Restore"
     parameters:
       name:

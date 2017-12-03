@@ -2,10 +2,10 @@
 description: Create index
 enabled: true
 entry_point: curator_runner.py
-name: indices.createindex
+name: indices.create_index
 parameters:
   action:
-    default: indices.createindex
+    default: indices.create_index
     immutable: true
     type: string
   all_indices:

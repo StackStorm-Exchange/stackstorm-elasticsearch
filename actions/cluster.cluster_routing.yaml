@@ -2,10 +2,10 @@
 description: Cluster routing
 enabled: true
 entry_point: curator_runner.py
-name: indices.clusterrouting
+name: cluster.cluster_routing
 parameters:
   action:
-    default: indices.clusterrouting
+    default: cluster.cluster_routing
     immutable: true
     type: string
   all_indices:
