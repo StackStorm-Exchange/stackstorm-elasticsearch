@@ -4,7 +4,10 @@ from utils import compact_dict, get_client
 from curator.utils import chunk_index_list
 from easydict import EasyDict
 from collections import defaultdict
+from curator.defaults import settings
+from curator.validators import options
 import curator
+import json
 import logging
 import sys
 
@@ -12,14 +15,6 @@ logger = logging.getLogger(__name__)
 
 
 class CuratorInvoke(object):
-    # Supported curator commands for indices and snapshots.
-    SUPPORTS = {
-        'snapshots': ['deletesnapshots', 'snapshot'],
-        'cluster': ['clusterrouting'],
-        'indices': ['alias', 'allocation', 'close', 'clusterrouting', 'createindex',
-                    'deleteindices', 'forcemerge', 'indexsettings', 'open', 'reindex',
-                    'replicas', 'restore', 'rollover', 'shrink']
-    }
 
     def __init__(self, **opts):
         self.opts = EasyDict(opts)
@@ -36,17 +31,40 @@ class CuratorInvoke(object):
             }))
         return self._client
 
+    def get_action_method(self, act_on, command):
+        settings_map = {'indices': settings.index_actions,
+                        'snapshots': settings.snapshot_actions,
+                        'cluster': settings.cluster_actions}
+
+        lookup = settings_map.get(act_on)
+        if lookup is None:
+            raise ValueError('invalid action: ' + act_on)
+
+        if command not in set(lookup()):
+            print 'Cannot find command ' + command + ' in ' + act_on
+            sys.exit(3)
+
+        method = command.title().replace('_', '')
+
+        # This is the only exception to the above rule
+        if method == 'Forcemerge':
+            method = 'ForceMerge'
+
+        return method
+
     def fetch(self, act_on, on_nofilters_showall=False):
         """
         Forwarder method to indices/snapshots selector.
         """
-        if act_on not in ['indices', 'snapshots']:
-            raise ValueError('invalid argument: %s', act_on)
+        if act_on not in ['indices', 'snapshots', 'cluster']:
+            raise ValueError('invalid argument: ' + act_on)
 
         if act_on == 'indices':
             return curator.IndexList(self.client).working_list()
-        else:
+        elif act_on == 'snapshots':
             return curator.SnapshotList(self.client).working_list()
+        else:
+            return []
 
     def command_kwargs(self, command):
         """
@@ -54,77 +72,42 @@ class CuratorInvoke(object):
         """
         opts = defaultdict(lambda: None, self.opts)
 
-        kwargs = {
-            'alias': ['name', 'extra_settings', 'remove'],
-            'allocation': ['key', 'value', 'allocation_type', 'wait_for_completion',
-                           'wait_interval', 'max_wait'],
-            'close': ['delete_aliases'],
-            'createindex': ['name'],
-            'deleteindices': ['master_timeout'],
-            'deletesnapshots': ['retry_interval', 'retry_count'],
-            'forcemerge': ['max_num_segments', 'delay'],
-            'indexsettings': ['index_settings', 'ignore_unavailable', 'preserve_existing'],
-            'reindex': ['request_body', 'refresh', 'requests_per_second', 'slices', 'timeout',
-                        'wait_for_active_shards', 'wait_for_completion', 'wait_interval',
-                        'max_wait', 'remote_url_prefix', 'remote_ssl_no_validate',
-                        'remote_certificate', 'remote_client_cert', 'remote_client_key',
-                        'remote_aws_cert', 'remote_aws_key', 'remote_aws_region',
-                        'remote_filters', 'migration_prefix', 'migration_suffix'],
-            'replicas': ['count', 'wait_for_completion', 'wait_interval', 'max_wait'],
-            'restore': ['name', 'indices', 'include_aliases', 'ignore_unavailable',
-                        'include_global_state', 'partial', 'rename_pattern',
-                        'extra_settings', 'wait_for_completion', 'wait_interval', 'max_wait',
-                        'skip_repo_fs_check'],
-            'rollover': ['name', 'conditions', 'extra_settings', 'wait_for_active_shards'],
-            'shrink': ['shrink_node', 'node_filters', 'number_of_shards', 'number_of_replicas',
-                       'shrink_prefix', 'shrink_suffix', 'copy_aliases', 'delete_after',
-                       'post_allocation', 'wait_for_active_shards', 'extra_settings',
-                       'wait_for_completion', 'wait_interval', 'max_wait'],
-            'snapshot': ['repository', 'name', 'wait_for_completion', 'wait_interval',
-                         'max_wait', 'ignore_unavailable', 'include_global_state',
-                         'partial', 'skip_repo_fs_check']
-        }
-        kwargs.get(command, {})
-        return compact_dict(kwargs)
+        kwargs = []
 
-    def _call_api(self, method, args, **kwargs):
+        # Get the available action specific options from curator
+        dict_list = options.action_specific(command)
+        for d in dict_list:
+            for k in d:
+                kwargs.append(k)
+
+        # Define each of the action specific options using values from the opts dict
+        command_kwargs = dict()
+        for key in kwargs:
+            command_kwargs[key] = opts[key]
+
+        return compact_dict(command_kwargs)
+
+    def _call_api(self, act_on, command, method, args, **kwargs):
         """Invoke curator action.
         """
 
         logger.debug("Performing do_action", method, args, kwargs)
 
+        # print 'Calling ' + method + ' on ' + str(args.indices)
         f = getattr(curator, method)
-        m = f(args, **kwargs)
 
-        # NOTE: do_action() raises an exception on failure
-        m.do_action()
+        o = f(args, **kwargs)
+        o.do_action()
 
-        # Return a true value to indicate a successful api call
         return True
 
-    def command_on_indices(self, command, ilo):
+    def command_on_indices(self, act_on, command, ilo):
         """Invoke command which acts on indices and perform an api call.
         """
         kwargs = self.command_kwargs(command)
         print 'kwargs = ' + str(kwargs)
 
-        # TODO: Use one data structure for mdict, SUPPORTS and command_kwargs()
-        mdict = {'alias': 'Alias',  # (add and remove requires ilo)
-                 'allocation': 'Allocation',  # ilo
-                 'close': 'Close',  # ilo
-                 'clusterrouting': 'ClusterRouting',  # client
-                 'createindex': 'CreateIndex',  # client
-                 'deleteindices': 'DeleteIndices',  # ilo
-                 'forcemerge': 'ForceMerge',  # ilo
-                 'indexsettings': 'IndexSettings',  # ilo
-                 'open': 'Open',  # ilo
-                 'reindex': 'Reindex',  # ilo
-                 'replicas': 'Replicas',  # ilo
-                 'rollover': 'Rollover',  # client
-                 'shrink': 'Shrink',  # ilo
-                 'snapshot': 'Snapshot'}  # ilo
-
-        method = mdict[command]
+        method = self.get_action_method(act_on, command)
 
         # List is too big and it will be proceeded in chunks.
         if len(curator.utils.to_csv(ilo.working_list())) > 3072:
@@ -133,17 +116,17 @@ class CuratorInvoke(object):
             for indices in chunk_index_list(ilo):
                 try:
                     # FIXME: Replace indices with ilo
-                    self._call_api(method, indices, **kwargs)
+                    self._call_api(act_on, command, method, indices, **kwargs)
                 except Exception:
                     success = False
             return success
         else:
             if command == 'clusterrouting' or command == 'createindex' or command == 'rollover':
-                return self._call_api(method, self.client, **kwargs)
+                return self._call_api(act_on, command, method, self.client, **kwargs)
             else:
-                return self._call_api(method, ilo, **kwargs)
+                return self._call_api(act_on, command, method, ilo, **kwargs)
 
-    def command_on_snapshots(self, command, ilo):
+    def command_on_snapshots(self, act_on, command, slo):
         """Invoke command which acts on snapshots and perform an api call.
         """
         # TODO: Handle command 'restore'
@@ -152,15 +135,16 @@ class CuratorInvoke(object):
             kwargs = self.command_kwargs(command)
             # The snapshot command should get the full (not chunked)
             # list of indices.
-            kwargs['indices'] = ilo
-            return self._call_api(method, **kwargs)
+            kwargs['indices'] = slo
+            return self._call_api(act_on, command, method, **kwargs)
 
         elif command == 'delete':
             method = 'delete_snapshot'
             success = True
-            for s in ilo:
+            for s in slo:
                 try:
-                    self._call_api(method, repository=self.opts.repository, snapshot=s)
+                    self._call_api(act_on, command, method, repository=self.opts.repository,
+                                   snapshot=s)
                 except Exception:
                     success = False
             return success
@@ -168,49 +152,61 @@ class CuratorInvoke(object):
             # should never get here
             raise RuntimeError("Unexpected method `{}.{}'".format('snapshots', command))
 
-    def _get_filtered_ilo(self, command, act_on):
-        ilo = curator.IndexList(self.client)
+    def _filter_working_list(self, act_on, command):
+
+        working_list = None
+        if act_on == 'indices':
+            working_list = curator.IndexList(self.client)
+        elif act_on == 'snapshots':
+            working_list = curator.SnapshotList(self.client)
 
         opts = self.opts
 
+        if working_list is None:
+            logger.error('No %s matched provided args: %s', act_on, opts)
+            print "ERROR. No {} found in Elasticsearch.".format(act_on)
+            sys.exit(99)
+
         # Protect against accidental delete
-        if command == 'delete':
+        if command == 'delete_indices' or command == 'delete_snapshots':
             logger.info("Pruning Kibana-related indices to prevent accidental deletion.")
-            ilo.filter_kibana()
+            working_list.filter_kibana()
 
         # If filter by disk space, filter the ilo by space:
-        if ilo and command == 'delete':
+        if working_list and command == 'delete':
             if opts.disk_space:
-                ilo.filter_by_space(disk_space=float(opts.disk_space),
-                                    reverse=(opts.reverse or True))
+                working_list.filter_by_space(disk_space=float(opts.disk_space),
+                                             reverse=(opts.reverse or True))
 
         # TODO: If JSON filter string is not defined, check if curator.yml exists (either
         # at a specified path, or the default path ~/.curator/curator.yml).
 
         # Iterate through all the filters defined in JSON filter string
-        ilo.iterate_filters(json.loads(opts.filters))
+        if opts.filters is None:
+            opts.filters = '{"filtertype": "none"}'
 
-        if not ilo.indices:
+        opts.filters = '{"filters": [' + opts.filters + ']}'
+        working_list.iterate_filters(json.loads(opts.filters))
+
+        if not working_list.indices:
             logger.error('No %s matched provided args: %s', act_on, opts)
             print "ERROR. No {} found in Elasticsearch.".format(act_on)
             sys.exit(99)
 
-        return ilo
+        return working_list
 
     def invoke(self, command=None, act_on=None):
         """Invoke command through translating it to curator api call.
         """
         if act_on is None:
-            raise ValueError("Requires act_on either on `indices' or `snapshots'")
-        if command not in self.SUPPORTS[act_on]:
-            raise ValueError("Unsupported curator command: {} {}".format(command, act_on))
+            raise ValueError("Requires act_on on `indices', `snapshots', or `cluster'")
 
         # Get the list of indices and apply filters
-        ilo = self._get_filtered_ilo(command, act_on)
+        working_list = self._filter_working_list(act_on, command)
 
         if act_on == 'indices' and command != 'snapshot':
-            return self.command_on_indices(command, ilo)
+            return self.command_on_indices(act_on, command, working_list)
+        elif act_on == 'snapshots':
+            return self.command_on_snapshots(act_on, command, working_list)
         else:
-            # Command on snapshots and snapshot command (which
-            # actually has selected indices before).
-            return self.command_on_snapshots(command, ilo)
+            return self.command_on_cluster(act_on, command, working_list)

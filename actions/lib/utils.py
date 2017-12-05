@@ -88,10 +88,3 @@ def compact_dict(source_dict):
     Drop all elements equal to None
     """
     return {k: v for k, v in source_dict.items() if v is not None}
-
-
-def xstr(s):
-    """
-    IdiotOmatic xstr.
-    """
-    return '' if s is None else str(s)

@@ -25,8 +25,7 @@ class CuratorAction(ESBaseAction):
     @property
     def act_on(self):
         if not self._act_on:
-            _act_on = 'indices' if self.action.startswith('indices') else 'snapshots'
-            self._act_on = _act_on
+            self._act_on = self.action.split('.')[0]
         return self._act_on
 
     @property
@@ -94,6 +93,5 @@ class CuratorAction(ESBaseAction):
             logger.info("Job starting: %s %s", self.command, self.act_on)
             logger.debug("Params: %s", self.config)
 
-            print 'self.api.invoke(' + self.command + ')'
             success = self.api.invoke(command=self.command, act_on=self.act_on)
             self.exit_msg(success)
