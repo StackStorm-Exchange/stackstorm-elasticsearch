@@ -152,6 +152,9 @@ class CuratorInvoke(object):
             # should never get here
             raise RuntimeError("Unexpected method `{}.{}'".format('snapshots', command))
 
+    def command_on_cluster(self, act_on, command):
+        raise RuntimeError('command_on_cluster is not yet implemented')
+
     def _filter_working_list(self, act_on, command):
 
         working_list = None
@@ -206,7 +209,7 @@ class CuratorInvoke(object):
 
         if act_on == 'indices' and command != 'snapshot':
             return self.command_on_indices(act_on, command, working_list)
-        elif act_on == 'snapshots':
+        elif (act_on == 'indices' and command == 'snapshot') or act_on == 'snapshots':
             return self.command_on_snapshots(act_on, command, working_list)
         else:
-            return self.command_on_cluster(act_on, command, working_list)
+            return self.command_on_cluster(act_on, command)
