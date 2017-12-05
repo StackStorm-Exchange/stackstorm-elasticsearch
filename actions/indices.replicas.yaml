@@ -24,6 +24,9 @@ parameters:
     items:
       type: string
     type: array
+  filters:
+    description: JSON formatted string of filters
+    type: string
   host:
     description: Elasticsearch host.
     required: true

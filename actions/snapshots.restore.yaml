@@ -23,6 +23,9 @@ parameters:
   extra_settings:
     description: Extra settings, including shard count and settings to omit.
     type: object
+  filters:
+    description: JSON formatted string of filters
+    type: string
   host:
     description: Elasticsearch host.
     required: true

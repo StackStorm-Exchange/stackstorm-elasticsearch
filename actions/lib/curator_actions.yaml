@@ -3,6 +3,8 @@
     description: "Show indices"
     parameters:
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -22,6 +24,8 @@
     description: "Show snapshots"
     parameters:
       # <-- Snapshot selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Snapshot list to operate on."
         type: "array"
@@ -44,6 +48,8 @@
     description: "Delete indices"
     parameters:
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -63,6 +69,8 @@
     description: "Delete snapshots"
     parameters:
       # <-- Snapshot selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Snapshot list to operate on."
         type: "array"
@@ -113,6 +121,8 @@
         type: "integer"
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -140,6 +150,8 @@
         type: "boolean"
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -163,6 +175,8 @@
         required: true
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -186,6 +200,8 @@
         type: "boolean"
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -205,6 +221,8 @@
     description: "Open indices"
     parameters:
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -237,6 +255,8 @@
         type: "integer"
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -261,6 +281,8 @@
         required: true
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -298,6 +320,8 @@
         type: "integer"
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -323,6 +347,8 @@
         type: "object"
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -349,6 +375,8 @@
         type: "integer"
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -379,6 +407,8 @@
         type: "boolean"
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -450,6 +480,8 @@
         description: "When migrating, append this value to the index name."
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -514,6 +546,8 @@
         type: "boolean"
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -547,6 +581,8 @@
         description: "The new index name"
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -610,6 +646,8 @@
         type: "integer"
 
       # <-- Indices selection
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"

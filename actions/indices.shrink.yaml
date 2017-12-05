@@ -33,6 +33,9 @@ parameters:
   extra_settings:
     description: A dictionary where the permitted root keys are 'settings' and 'aliases'.
     type: object
+  filters:
+    description: JSON formatted string of filters
+    type: string
   host:
     description: Elasticsearch host.
     required: true

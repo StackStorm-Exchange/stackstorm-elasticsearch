@@ -28,6 +28,9 @@ parameters:
       new index on rollover. This is used in place of 'settings' in the Rollover API,
       mostly because it's already existent in other places here in Curator.
     type: object
+  filters:
+    description: JSON formatted string of filters
+    type: string
   host:
     description: Elasticsearch host.
     required: true

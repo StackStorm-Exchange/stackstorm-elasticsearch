@@ -23,6 +23,9 @@ parameters:
   extra_settings:
     description: A dict representing the 'settings' and 'mappings' for the index.
     type: object
+  filters:
+    description: JSON formatted string of filters
+    type: string
   host:
     description: Elasticsearch host.
     required: true
