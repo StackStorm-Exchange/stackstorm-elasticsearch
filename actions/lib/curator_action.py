@@ -48,13 +48,13 @@ class CuratorAction(ESBaseAction):
         items = self.api.fetch(act_on=self.act_on, on_nofilters_showall=True)
         print "DRY RUN MODE. No changes will be made."
         print "DRY RUN MODE. Executing command {} {}.".format(command, self.act_on)
-        for item in items:
+        for item in items.working_list():
             if self.act_on == 'snapshots':
                 print "DRY RUN: {0}: {1}".format(command, item)
             else:
-                # TODO: Rewrite index_closed
-                print "DRY RUN - index_closed"  # : {0}: {1}{2}".format(command, item, ' (CLOSED)'
-                # if index_closed(self.client, item) else '')
+                print "DRY RUN: {0}: {1}{2}".format(command, item, ' (CLOSED)' if
+                                                    items.index_info[item]['state'] == 'close'
+                                                    else '')
 
     def do_show(self):
         """
@@ -62,7 +62,7 @@ class CuratorAction(ESBaseAction):
         """
         if not self.config.dry_run:
             for item in self.api.fetch(act_on=self.act_on,
-                                       on_nofilters_showall=True):
+                                       on_nofilters_showall=True).working_list():
                 print item
         else:
             self.show_dry_run()

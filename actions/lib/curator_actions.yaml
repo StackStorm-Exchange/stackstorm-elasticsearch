@@ -3,6 +3,9 @@
     description: "Show indices"
     parameters:
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -24,6 +27,9 @@
     description: "Show snapshots"
     parameters:
       # <-- Snapshot selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -48,6 +54,9 @@
     description: "Delete indices"
     parameters:
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -69,6 +78,9 @@
     description: "Delete snapshots"
     parameters:
       # <-- Snapshot selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -121,6 +133,9 @@
         type: "integer"
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -150,6 +165,9 @@
         type: "boolean"
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -175,6 +193,9 @@
         required: true
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -200,6 +221,9 @@
         type: "boolean"
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -221,6 +245,9 @@
     description: "Open indices"
     parameters:
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -255,6 +282,9 @@
         type: "integer"
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -281,6 +311,9 @@
         required: true
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -320,6 +353,9 @@
         type: "integer"
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -347,6 +383,9 @@
         type: "object"
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -375,6 +414,9 @@
         type: "integer"
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -407,6 +449,9 @@
         type: "boolean"
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -480,6 +525,9 @@
         description: "When migrating, append this value to the index name."
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -546,6 +594,9 @@
         type: "boolean"
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -581,6 +632,9 @@
         description: "The new index name"
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:
@@ -646,6 +700,9 @@
         type: "integer"
 
       # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
       filters:
         description: "JSON formatted string of filters"
       exclude:

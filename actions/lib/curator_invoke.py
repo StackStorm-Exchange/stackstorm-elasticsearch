@@ -9,6 +9,7 @@ from curator.validators import options
 import curator
 import json
 import logging
+import os.path
 import sys
 
 logger = logging.getLogger(__name__)
@@ -60,9 +61,9 @@ class CuratorInvoke(object):
             raise ValueError('invalid argument: ' + act_on)
 
         if act_on == 'indices':
-            return curator.IndexList(self.client).working_list()
+            return curator.IndexList(self.client)
         elif act_on == 'snapshots':
-            return curator.SnapshotList(self.client).working_list()
+            return curator.SnapshotList(self.client)
         else:
             return []
 
@@ -93,7 +94,6 @@ class CuratorInvoke(object):
 
         logger.debug("Performing do_action", method, args, kwargs)
 
-        # print 'Calling ' + method + ' on ' + str(args.indices)
         f = getattr(curator, method)
 
         o = f(args, **kwargs)
@@ -105,7 +105,6 @@ class CuratorInvoke(object):
         """Invoke command which acts on indices and perform an api call.
         """
         kwargs = self.command_kwargs(command)
-        print 'kwargs = ' + str(kwargs)
 
         method = self.get_action_method(act_on, command)
 
@@ -121,7 +120,7 @@ class CuratorInvoke(object):
                     success = False
             return success
         else:
-            if command == 'clusterrouting' or command == 'createindex' or command == 'rollover':
+            if command == 'cluster_routing' or command == 'create_index' or command == 'rollover':
                 return self._call_api(act_on, command, method, self.client, **kwargs)
             else:
                 return self._call_api(act_on, command, method, ilo, **kwargs)
@@ -155,6 +154,17 @@ class CuratorInvoke(object):
     def command_on_cluster(self, act_on, command):
         raise RuntimeError('command_on_cluster is not yet implemented')
 
+    def _get_filters_from_json(self, fn):
+        filters = '{"filtertype": "none"}'
+        fn = os.path.expanduser(fn)
+        if os.path.isfile(fn):
+            f = open(fn, 'r')
+            json_data = f.read().rstrip()
+            if len(json_data) > 0:
+                filters = json_data
+
+        return filters
+
     def _filter_working_list(self, act_on, command):
 
         working_list = None
@@ -181,15 +191,13 @@ class CuratorInvoke(object):
                 working_list.filter_by_space(disk_space=float(opts.disk_space),
                                              reverse=(opts.reverse or True))
 
-        # TODO: If JSON filter string is not defined, check if curator.yml exists (either
-        # at a specified path, or the default path ~/.curator/curator.yml).
+        # If no filters are passed in opts, then attempt to read from file opts.curator_json
+        if opts.filters is None:
+            filters = self._get_filters_from_json(opts.curator_json)
 
         # Iterate through all the filters defined in JSON filter string
-        if opts.filters is None:
-            opts.filters = '{"filtertype": "none"}'
-
-        opts.filters = '{"filters": [' + opts.filters + ']}'
-        working_list.iterate_filters(json.loads(opts.filters))
+        filters = '{"filters": [' + filters + ']}'
+        working_list.iterate_filters(json.loads(filters))
 
         if not working_list.indices:
             logger.error('No %s matched provided args: %s', act_on, opts)
