@@ -11,6 +11,10 @@ parameters:
   all_indices:
     description: Do not filter indices.  Act on all indices.
     type: boolean
+  curator_json:
+    default: ~/.curator/curator.json
+    description: Path to curator YAML file used to specify filters
+    type: string
   dry_run:
     default: false
     description: Do not perform any changes.

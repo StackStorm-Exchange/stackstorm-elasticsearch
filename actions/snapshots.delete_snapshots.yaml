@@ -11,6 +11,10 @@ parameters:
   all_snapshots:
     description: Do not filter snapshots.  Act on all snapshots.
     type: boolean
+  curator_json:
+    default: ~/.curator/curator.json
+    description: Path to curator YAML file used to specify filters
+    type: string
   dry_run:
     default: false
     description: Do not perform any changes.

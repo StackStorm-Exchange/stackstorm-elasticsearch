@@ -17,6 +17,10 @@ parameters:
       shrinking. The aliases will be added to target index and deleted from source
       index at the same time. (default: False)'
     type: boolean
+  curator_json:
+    default: ~/.curator/curator.json
+    description: Path to curator YAML file used to specify filters
+    type: string
   delete_after:
     default: true
     description: 'Whether to delete each index after shrinking. (default: True)'

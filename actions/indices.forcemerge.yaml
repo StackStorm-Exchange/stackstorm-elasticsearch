@@ -11,6 +11,10 @@ parameters:
   all_indices:
     description: Do not filter indices.  Act on all indices.
     type: boolean
+  curator_json:
+    default: ~/.curator/curator.json
+    description: Path to curator YAML file used to specify filters
+    type: string
   delay:
     description: Number of seconds to delay between forceMerge operations
     type: integer
