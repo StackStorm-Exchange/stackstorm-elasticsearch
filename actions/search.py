@@ -1,8 +1,8 @@
 # pylint: disable=no-member
 
 from easydict import EasyDict
-from lib.items_selector import ItemsSelector
 from lib.esbase_action import ESBaseAction
+import curator
 import logging
 import sys
 import elasticsearch
@@ -15,20 +15,7 @@ class SearchRunner(ESBaseAction):
 
     def __init__(self, config=None):
         super(SearchRunner, self).__init__(config=config)
-        self._iselector = None
         self._return_object = False
-
-    @property
-    def iselector(self):
-        """
-        Used to fetch indices/snapshots and apply filter to them.
-        """
-        if not self._iselector:
-            kwargs = self.config.copy()
-            # Support iselectors parameters
-            kwargs.update({'dry_run': False})
-            self._iselector = ItemsSelector(self.client, **kwargs)
-        return self._iselector
 
     def run(self, action=None, log_level='warn', operation_timeout=600, **kwargs):
         kwargs.update({
@@ -50,7 +37,8 @@ class SearchRunner(ESBaseAction):
         """
         accepted_params = ('q', 'df', 'default_operator', 'from', 'size')
         kwargs = {k: self.config[k] for k in accepted_params if self.config[k]}
-        indices = ','.join(self.iselector.indices())
+        wl = curator.IndexList(self.client)
+        indices = ','.join(wl.working_list())
 
         try:
             result = self.client.search(index=indices, **kwargs)

@@ -1,12 +1,12 @@
 # pylint: disable=no-member
 
 from utils import compact_dict, get_client
-from curator.utils import chunk_index_list
 from easydict import EasyDict
 from collections import defaultdict
 from curator.defaults import settings
 from curator.validators import options
 import curator
+import errno
 import json
 import logging
 import os.path
@@ -92,7 +92,7 @@ class CuratorInvoke(object):
         """Invoke curator action.
         """
 
-        logger.debug("Performing do_action", method, args, kwargs)
+        logger.debug("Perfoming api call %s with args: %s, kwargs: %s", method, args, kwargs)
 
         f = getattr(curator, method)
 
@@ -108,22 +108,10 @@ class CuratorInvoke(object):
 
         method = self.get_action_method(act_on, command)
 
-        # List is too big and it will be proceeded in chunks.
-        if len(curator.utils.to_csv(ilo.working_list())) > 3072:
-            logger.warn('Very large list of indices.  Breaking it up into smaller chunks.')
-            success = True
-            for indices in chunk_index_list(ilo):
-                try:
-                    # FIXME: Replace indices with ilo
-                    self._call_api(act_on, command, method, indices, **kwargs)
-                except Exception:
-                    success = False
-            return success
+        if command == 'create_index' or command == 'rollover':
+            return self._call_api(act_on, command, method, self.client, **kwargs)
         else:
-            if command == 'cluster_routing' or command == 'create_index' or command == 'rollover':
-                return self._call_api(act_on, command, method, self.client, **kwargs)
-            else:
-                return self._call_api(act_on, command, method, ilo, **kwargs)
+            return self._call_api(act_on, command, method, ilo, **kwargs)
 
     def command_on_snapshots(self, act_on, command, slo):
         """Invoke command which acts on snapshots and perform an api call.
@@ -157,11 +145,13 @@ class CuratorInvoke(object):
     def _get_filters_from_json(self, fn):
         filters = '{"filtertype": "none"}'
         fn = os.path.expanduser(fn)
-        if os.path.isfile(fn):
+        if os.path.exists(fn):
             f = open(fn, 'r')
             json_data = f.read().rstrip()
             if len(json_data) > 0:
                 filters = json_data
+        else:
+            raise IOError(errno.ENOENT, "File `{}' is missing.".format(fn))
 
         return filters
 

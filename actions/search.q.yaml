@@ -4,6 +4,9 @@ enabled: true
 entry_point: search.py
 name: search.q
 parameters:
+  filters:
+    description: JSON formatted string of filters
+    type: string
   action:
     default: search.q
     immutable: true
