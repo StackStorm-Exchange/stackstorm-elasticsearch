@@ -175,13 +175,7 @@ class CuratorInvoke(object):
             logger.info("Pruning Kibana-related indices to prevent accidental deletion.")
             working_list.filter_kibana()
 
-        # If filter by disk space, filter the ilo by space:
-        if working_list and command == 'delete':
-            if opts.disk_space:
-                working_list.filter_by_space(disk_space=float(opts.disk_space),
-                                             reverse=(opts.reverse or True))
-
-        # If no filters are passed in opts, then attempt to read from file opts.curator_json
+        # If no filters are passed in opts, then try reading them from file opts.curator_json
         if opts.filters is None:
             filters = self._get_filters_from_json(opts.curator_json)
 
