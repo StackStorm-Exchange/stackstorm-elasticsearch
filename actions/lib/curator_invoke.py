@@ -6,7 +6,6 @@ from collections import defaultdict
 from curator.defaults import settings
 from curator.validators import options
 import curator
-import errno
 import json
 import logging
 import os.path
@@ -88,14 +87,26 @@ class CuratorInvoke(object):
 
         return compact_dict(command_kwargs)
 
+    def flatten_unicode_keys(d):
+        for k in d:
+            if isinstance(k, unicode):
+                v = d[k]
+                del d[k]
+                d[str(k)] = v
+
     def _call_api(self, act_on, command, method, args, **kwargs):
         """Invoke curator action.
         """
 
-        logger.debug("Perfoming api call %s with args: %s, kwargs: %s", method, args, kwargs)
+        logger.debug("Performing api call %s with args: %s, kwargs: %s", method, args, kwargs)
 
         f = getattr(curator, method)
 
+        # if command == 'create_index':
+        # name = kwargs['name']
+        # del kwargs['name']
+        # o = f(args, name, **kwargs)
+        # else:
         o = f(args, **kwargs)
         o.do_action()
 
@@ -111,6 +122,7 @@ class CuratorInvoke(object):
         if command == 'create_index' or command == 'rollover':
             return self._call_api(act_on, command, method, self.client, **kwargs)
         else:
+            print "kwargs = " + str(kwargs)
             return self._call_api(act_on, command, method, ilo, **kwargs)
 
     def command_on_snapshots(self, act_on, command, slo):
@@ -144,25 +156,27 @@ class CuratorInvoke(object):
 
     def _get_filters_from_json(self, fn):
         filters = '{"filtertype": "none"}'
-        fn = os.path.expanduser(fn)
-        if os.path.exists(fn):
+        name = os.path.expanduser(fn)
+        if os.path.exists(name):
             f = open(fn, 'r')
             json_data = f.read().rstrip()
             if len(json_data) > 0:
                 filters = json_data
-        else:
-            raise IOError(errno.ENOENT, "File `{}' is missing.".format(fn))
+        # elif fn != '~/.curator/curator.json'
+            # logger.error("File `{}' is missing. Using default filter type `none'.".format(name))
 
         return filters
 
-    def _filter_working_list(self, act_on, command):
-
+    def _get_working_list(self, act_on, command):
         working_list = None
         if act_on == 'indices':
             working_list = curator.IndexList(self.client)
         elif act_on == 'snapshots':
             working_list = curator.SnapshotList(self.client)
 
+        return working_list
+
+    def _filter_working_list(self, act_on, command, working_list):
         opts = self.opts
 
         if working_list is None:
@@ -196,12 +210,12 @@ class CuratorInvoke(object):
         if act_on is None:
             raise ValueError("Requires act_on on `indices', `snapshots', or `cluster'")
 
-        # Get the list of indices and apply filters
-        working_list = self._filter_working_list(act_on, command)
+        # Get the working_list (index or snapshot) and apply filters
+        wl = self._filter_working_list(act_on, command, self._get_working_list(act_on, command))
 
         if act_on == 'indices' and command != 'snapshot':
-            return self.command_on_indices(act_on, command, working_list)
+            return self.command_on_indices(act_on, command, wl)
         elif (act_on == 'indices' and command == 'snapshot') or act_on == 'snapshots':
-            return self.command_on_snapshots(act_on, command, working_list)
+            return self.command_on_snapshots(act_on, command, wl)
         else:
             return self.command_on_cluster(act_on, command)
