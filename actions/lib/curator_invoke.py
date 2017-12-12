@@ -78,7 +78,7 @@ class CuratorInvoke(object):
         dict_list = options.action_specific(command)
         for d in dict_list:
             for k in d:
-                kwargs.append(k)
+                kwargs.append(str(k))
 
         # Define each of the action specific options using values from the opts dict
         command_kwargs = dict()
@@ -94,7 +94,7 @@ class CuratorInvoke(object):
                 del d[k]
                 d[str(k)] = v
 
-    def _call_api(self, act_on, command, method, args, **kwargs):
+    def _call_api(self, method, args, **kwargs):
         """Invoke curator action.
         """
 
@@ -102,11 +102,6 @@ class CuratorInvoke(object):
 
         f = getattr(curator, method)
 
-        # if command == 'create_index':
-        # name = kwargs['name']
-        # del kwargs['name']
-        # o = f(args, name, **kwargs)
-        # else:
         o = f(args, **kwargs)
         o.do_action()
 
@@ -119,11 +114,13 @@ class CuratorInvoke(object):
 
         method = self.get_action_method(act_on, command)
 
+        obj = ilo
+
         if command == 'create_index' or command == 'rollover':
-            return self._call_api(act_on, command, method, self.client, **kwargs)
-        else:
-            print "kwargs = " + str(kwargs)
-            return self._call_api(act_on, command, method, ilo, **kwargs)
+            # return self._call_api(method, self.client, **kwargs)
+            obj = self.client
+
+        return self._call_api(method, obj, **kwargs)
 
     def command_on_snapshots(self, act_on, command, slo):
         """Invoke command which acts on snapshots and perform an api call.
@@ -135,14 +132,14 @@ class CuratorInvoke(object):
             # The snapshot command should get the full (not chunked)
             # list of indices.
             kwargs['indices'] = slo
-            return self._call_api(act_on, command, method, **kwargs)
+            return self._call_api(method, **kwargs)
 
         elif command == 'delete':
             method = 'delete_snapshot'
             success = True
             for s in slo:
                 try:
-                    self._call_api(act_on, command, method, repository=self.opts.repository,
+                    self._call_api(method, repository=self.opts.repository,
                                    snapshot=s)
                 except Exception:
                     success = False
@@ -192,6 +189,8 @@ class CuratorInvoke(object):
         # If no filters are passed in opts, then try reading them from file opts.curator_json
         if opts.filters is None:
             filters = self._get_filters_from_json(opts.curator_json)
+        else:
+            filters = opts.filters
 
         # Iterate through all the filters defined in JSON filter string
         filters = '{"filters": [' + filters + ']}'
