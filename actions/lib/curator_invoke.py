@@ -32,6 +32,8 @@ class CuratorInvoke(object):
         return self._client
 
     def get_action_method(self, act_on, command):
+        """Read the name of the action methods from the curator library
+        """
         settings_map = {'indices': settings.index_actions,
                         'snapshots': settings.snapshot_actions,
                         'cluster': settings.cluster_actions}
@@ -87,13 +89,6 @@ class CuratorInvoke(object):
 
         return compact_dict(command_kwargs)
 
-    def flatten_unicode_keys(d):
-        for k in d:
-            if isinstance(k, unicode):
-                v = d[k]
-                del d[k]
-                d[str(k)] = v
-
     def _call_api(self, method, args, **kwargs):
         """Invoke curator action.
         """
@@ -117,7 +112,6 @@ class CuratorInvoke(object):
         obj = ilo
 
         if command == 'create_index' or command == 'rollover':
-            # return self._call_api(method, self.client, **kwargs)
             obj = self.client
 
         return self._call_api(method, obj, **kwargs)
@@ -149,9 +143,13 @@ class CuratorInvoke(object):
             raise RuntimeError("Unexpected method `{}.{}'".format('snapshots', command))
 
     def command_on_cluster(self, act_on, command):
+        """Invoke command which acts on cluster and perform an api call.
+        """
         raise RuntimeError('command_on_cluster is not yet implemented')
 
     def _get_filters_from_json(self, fn):
+        """Read JSON-formatted filters from the specified file
+        """
         filters = '{"filtertype": "none"}'
         name = os.path.expanduser(fn)
         if os.path.exists(name):
@@ -159,12 +157,12 @@ class CuratorInvoke(object):
             json_data = f.read().rstrip()
             if len(json_data) > 0:
                 filters = json_data
-        # elif fn != '~/.curator/curator.json'
-            # logger.error("File `{}' is missing. Using default filter type `none'.".format(name))
 
         return filters
 
     def _get_working_list(self, act_on, command):
+        """Get the working list from curator (either an IndexList or a SnapshotList)
+        """
         working_list = None
         if act_on == 'indices':
             working_list = curator.IndexList(self.client)
@@ -174,6 +172,8 @@ class CuratorInvoke(object):
         return working_list
 
     def _filter_working_list(self, act_on, command, working_list):
+        """Filter the working_list using the specified filters
+        """
         opts = self.opts
 
         if working_list is None:
