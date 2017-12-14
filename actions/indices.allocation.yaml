@@ -1,5 +1,5 @@
 ---
-description: Index Allocation
+description: Apply shard allocation filtering rules to the specified indices
 enabled: true
 entry_point: curator_runner.py
 name: indices.allocation
@@ -11,10 +11,23 @@ parameters:
   all_indices:
     description: Do not filter indices.  Act on all indices.
     type: boolean
+  allocation_type:
+    default: require
+    description: The value of this setting must be one of require, include, or exclude.
+    type: string
+  continue_if_exception:
+    default: false
+    description: If set to true, Curator will attempt to continue on to the next action.
+    type: boolean
   curator_json:
     default: ~/.curator/curator.json
     description: Path to curator YAML file used to specify filters
     type: string
+  disable_action:
+    default: false
+    description: If set to true, Curator will ignore the current action. The default
+      value is false.
+    type: boolean
   dry_run:
     default: false
     description: Do not perform any changes.
@@ -34,11 +47,22 @@ parameters:
   http_auth:
     description: 'Use Basic Authentication ex: user:pass'
     type: string
+  ignore_empty_list:
+    default: false
+    description: When set to true, the action will exit with an INFO level log message
+      indicating such. If set to false, an ERROR level message will be logged and
+      curator will exit with code 1.
+    type: boolean
   index:
     description: Index list to operate on.
     items:
       type: string
     type: array
+  key:
+    description: The value of this setting should correspond to a node setting on
+      one or more nodes in your cluster.
+    required: true
+    type: string
   log_level:
     default: warn
     description: Log level [critical|error|warning|info|debug].
@@ -47,6 +71,11 @@ parameters:
     default: false
     description: Only operate on elected master node.
     type: boolean
+  max_wait:
+    default: 300
+    description: Number of seconds to wait for shard routing and reallocation to complete
+      before giving up. A max_wait value of -1 will wait indefinitely.
+    type: integer
   operation_timeout:
     default: '{{timeout}}'
     description: Elasticsearch operation timeout in seconds. (It's equal to action
@@ -56,13 +85,14 @@ parameters:
   port:
     description: Elasticsearch port.
     type: string
-  rule:
-    description: Routing allocation rule to apply, e.g. tag=ssd
-    required: true
-    type: string
   timeout:
     default: 600
     description: Don't wait for action completion more then the specified timeout.
+    type: integer
+  timeout_override:
+    description: snapshot, restore and forcemerge override this value to 21600 if
+      unset. The close action will override this value to 180 if unset. All other
+      actions have no default value.
     type: integer
   url_prefix:
     description: Elasticsearch http url prefix.
@@ -71,4 +101,17 @@ parameters:
     default: false
     description: Connect to Elasticsearch through SSL.
     type: boolean
+  value:
+    description: 'The value of this setting should correspond to a node setting on
+      one or more nodes in your cluster. For example, you might have set node.tag:
+      myvalue. To match allocation in this case, set value to myvalue.'
+    type: string
+  wait_for_completion:
+    default: true
+    description: Wait for the shard routing to complete before continuing.
+    type: boolean
+  wait_interval:
+    default: 10
+    description: Poll for completion every wait_interval seconds.
+    type: integer
 runner_type: python-script

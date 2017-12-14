@@ -2,6 +2,22 @@
 - indices.show:
     description: "Show indices"
     parameters:
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
       # <-- Indices selection
       curator_json:
         description: "Path to curator YAML file used to specify filters"
@@ -26,6 +42,22 @@
 - snapshots.show:
     description: "Show snapshots"
     parameters:
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
       # <-- Snapshot selection
       curator_json:
         description: "Path to curator YAML file used to specify filters"
@@ -53,6 +85,22 @@
 - indices.delete_indices:
     description: "Delete indices"
     parameters:
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
       # <-- Indices selection
       curator_json:
         description: "Path to curator YAML file used to specify filters"
@@ -77,6 +125,22 @@
 - snapshots.delete_snapshots:
     description: "Delete snapshots"
     parameters:
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
       # <-- Snapshot selection
       curator_json:
         description: "Path to curator YAML file used to specify filters"
@@ -131,6 +195,22 @@
         description: "Don't wait for action completion more then the specified timeout."
         default: 21600
         type: "integer"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
 
       # <-- Indices selection
       curator_json:
@@ -172,6 +252,21 @@
         description: "This setting specifies whether or not the alias action should continue with a warning or return immediately in the event that the filters in the add or remove section result in an empty index list."
         default: false
         type: "boolean"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
@@ -195,11 +290,43 @@
       # -->
 
 - indices.allocation:
-    description: "Index Allocation"
+    description: "Apply shard allocation filtering rules to the specified indices"
     parameters:
-      rule:
-        description: "Routing allocation rule to apply, e.g. tag=ssd"
+      key:
+        description: "The value of this setting should correspond to a node setting on one or more nodes in your cluster."
         required: true
+      value:
+        description: "The value of this setting should correspond to a node setting on one or more nodes in your cluster. For example, you might have set node.tag: myvalue. To match allocation in this case, set value to myvalue."
+      allocation_type:
+        description: "The value of this setting must be one of require, include, or exclude."
+        default: "require"
+      wait_for_completion:
+        description: "Wait for the shard routing to complete before continuing."
+        default: true
+        type: "boolean"
+      max_wait:
+        description: "Number of seconds to wait for shard routing and reallocation to complete before giving up. A max_wait value of -1 will wait indefinitely."
+        default: 300
+        type: "integer"
+      wait_interval:
+        description: "Poll for completion every wait_interval seconds."
+        default: 10
+        type: "integer"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
@@ -228,6 +355,21 @@
       delete_aliases:
         description: "If True, will delete any associated aliases before closing indices."
         type: "boolean"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
@@ -253,6 +395,22 @@
 - indices.open:
     description: "Open indices"
     parameters:
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
       # <-- Indices selection
       curator_json:
         description: "Path to curator YAML file used to specify filters"
@@ -289,6 +447,21 @@
         description: "Don't wait for action completion more then the specified timeout."
         default: 21600
         type: "integer"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
@@ -318,6 +491,21 @@
         description: "Number of replicas the indices should have."
         type: "integer"
         required: true
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
@@ -360,6 +548,21 @@
       max_wait:
         description: "Maximum number of seconds to wait_for_completion"
         type: "integer"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
@@ -390,6 +593,21 @@
       extra_settings:
         description: "A dict representing the 'settings' and 'mappings' for the index."
         type: "object"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
@@ -421,6 +639,21 @@
       delay:
         description: "Number of seconds to delay between forceMerge operations"
         type: "integer"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
@@ -454,6 +687,21 @@
         type: "boolean"
       preserve_existing:
         description: "Whether to update existing settings. If set to True existing settings on an index remain unchanged. The default is False."
+        default: false
+        type: "boolean"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
         default: false
         type: "boolean"
 
@@ -532,6 +780,21 @@
         description: "When migrating, prepend this value to the index name."
       migration_suffix:
         description: "When migrating, append this value to the index name."
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
@@ -601,6 +864,21 @@
         description: "Do not validate write access to repository on all cluster nodes before proceeding. (default: False). Useful for shared filesystems where intermittent timeouts can affect validation, but won't likely affect snapshot success."
         default: false
         type: "boolean"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
@@ -639,6 +917,21 @@
         type: "integer"
       new_index:
         description: "The new index name"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
@@ -707,6 +1000,21 @@
       max_wait:
         description: "Maximum number of seconds to wait_for_completion."
         type: "integer"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
       curator_json:
