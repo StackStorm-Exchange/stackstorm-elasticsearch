@@ -10,7 +10,7 @@ parameters:
     type: string
   add:
     description: Add to alias.
-    type: object
+    type: string
   all_indices:
     description: Do not filter indices.  Act on all indices.
     type: boolean
@@ -84,7 +84,7 @@ parameters:
     type: string
   remove:
     description: Remove from alias rather than add.
-    type: object
+    type: string
   timeout:
     default: 600
     description: Don't wait for action completion more then the specified timeout.

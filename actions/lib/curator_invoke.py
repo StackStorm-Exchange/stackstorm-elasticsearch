@@ -76,9 +76,11 @@ class CuratorInvoke(object):
         if command == 'alias':
             kwargs['warn_if_no_indices'] = self.opts.get('warn_if_no_indices', False)
             if self.opts.add is not None:
-                config['add'] = self.opts.add
+                config['add'] = json.loads('{"filters": [' + self.opts.add + ']}')
             if self.opts.remove is not None:
-                config['remove'] = self.opts.remove
+                config['remove'] = json.loads('{"filters": [' + self.opts.remove + ']}')
+        elif command == 'reindex':
+            kwargs['request_body'] = json.loads(self.opts.get('request_body', ''))
 
         config['options'] = kwargs
 
