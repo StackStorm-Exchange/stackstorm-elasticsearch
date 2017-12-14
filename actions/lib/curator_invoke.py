@@ -56,7 +56,6 @@ class CuratorInvoke(object):
         dict_list = options.action_specific(command)
 
         for d in dict_list:
-            print 'D = ' + str(d)
             for k in d:
                 kwargs.append(str(k))
 
