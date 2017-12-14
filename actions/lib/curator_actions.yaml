@@ -159,8 +159,17 @@
       name:
         description: "Alias name"
         required: true
+      add:
+        description: "Add to alias."
+        type: "object"
       remove:
         description: "Remove from alias rather than add."
+        type: "object"
+      extra_settings:
+        description: "The extra_settings option allows the addition of extra settings with the add directive. These settings are ignored for remove."
+        type: "object"
+      warn_if_no_indices:
+        description: "This setting specifies whether or not the alias action should continue with a warning or return immediately in the event that the filters in the add or remove section result in an empty index list."
         default: false
         type: "boolean"
 

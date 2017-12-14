@@ -3,13 +3,12 @@
 from utils import compact_dict, get_client
 from easydict import EasyDict
 from collections import defaultdict
-from curator.defaults import settings
 from curator.validators import options
+from curator.cli import process_action
 import curator
 import json
 import logging
 import os.path
-import sys
 
 logger = logging.getLogger(__name__)
 
@@ -30,29 +29,6 @@ class CuratorInvoke(object):
                 'master_only': o.master_only, 'timeout': o.timeout
             }))
         return self._client
-
-    def get_action_method(self, act_on, command):
-        """Read the name of the action methods from the curator library
-        """
-        settings_map = {'indices': settings.index_actions,
-                        'snapshots': settings.snapshot_actions,
-                        'cluster': settings.cluster_actions}
-
-        lookup = settings_map.get(act_on)
-        if lookup is None:
-            raise ValueError('invalid action: ' + act_on)
-
-        if command not in set(lookup()):
-            print 'Cannot find command ' + command + ' in ' + act_on
-            sys.exit(3)
-
-        method = command.title().replace('_', '')
-
-        # This is the only exception to the above rule
-        if method == 'Forcemerge':
-            method = 'ForceMerge'
-
-        return method
 
     def fetch(self, act_on, on_nofilters_showall=False):
         """
@@ -78,7 +54,9 @@ class CuratorInvoke(object):
 
         # Get the available action specific options from curator
         dict_list = options.action_specific(command)
+
         for d in dict_list:
+            print 'D = ' + str(d)
             for k in d:
                 kwargs.append(str(k))
 
@@ -89,63 +67,25 @@ class CuratorInvoke(object):
 
         return compact_dict(command_kwargs)
 
-    def _call_api(self, method, args, **kwargs):
-        """Invoke curator action.
-        """
-
-        logger.debug("Performing api call %s with args: %s, kwargs: %s", method, args, kwargs)
-
-        f = getattr(curator, method)
-
-        o = f(args, **kwargs)
-        o.do_action()
-
-        return True
-
-    def command_on_indices(self, act_on, command, ilo):
+    def run(self, act_on, command):
         """Invoke command which acts on indices and perform an api call.
         """
         kwargs = self.command_kwargs(command)
 
-        method = self.get_action_method(act_on, command)
+        config = {'action': command, 'filters': json.loads('[' + self.opts.filters + ']')}
 
-        obj = ilo
+        if command == 'alias':
+            kwargs['warn_if_no_indices'] = self.opts.get('warn_if_no_indices', False)
+            if self.opts.add is not None:
+                config['add'] = self.opts.add
+            if self.opts.remove is not None:
+                config['remove'] = self.opts.remove
 
-        if command == 'create_index' or command == 'rollover':
-            obj = self.client
+        config['options'] = kwargs
 
-        return self._call_api(method, obj, **kwargs)
+        process_action(self.client, config, **kwargs)
 
-    def command_on_snapshots(self, act_on, command, slo):
-        """Invoke command which acts on snapshots and perform an api call.
-        """
-        # TODO: Handle command 'restore'
-        if command == 'snapshot':
-            method = 'create_snapshot'
-            kwargs = self.command_kwargs(command)
-            # The snapshot command should get the full (not chunked)
-            # list of indices.
-            kwargs['indices'] = slo
-            return self._call_api(method, **kwargs)
-
-        elif command == 'delete':
-            method = 'delete_snapshot'
-            success = True
-            for s in slo:
-                try:
-                    self._call_api(method, repository=self.opts.repository,
-                                   snapshot=s)
-                except Exception:
-                    success = False
-            return success
-        else:
-            # should never get here
-            raise RuntimeError("Unexpected method `{}.{}'".format('snapshots', command))
-
-    def command_on_cluster(self, act_on, command):
-        """Invoke command which acts on cluster and perform an api call.
-        """
-        raise RuntimeError('command_on_cluster is not yet implemented')
+        return True
 
     def _get_filters_from_json(self, fn):
         """Read JSON-formatted filters from the specified file
@@ -160,61 +100,14 @@ class CuratorInvoke(object):
 
         return filters
 
-    def _get_working_list(self, act_on, command):
-        """Get the working list from curator (either an IndexList or a SnapshotList)
-        """
-        working_list = None
-        if act_on == 'indices':
-            working_list = curator.IndexList(self.client)
-        elif act_on == 'snapshots':
-            working_list = curator.SnapshotList(self.client)
-
-        return working_list
-
-    def _filter_working_list(self, act_on, command, working_list):
-        """Filter the working_list using the specified filters
-        """
-        opts = self.opts
-
-        if working_list is None:
-            logger.error('No %s matched provided args: %s', act_on, opts)
-            print "ERROR. No {} found in Elasticsearch.".format(act_on)
-            sys.exit(99)
-
-        # Protect against accidental delete
-        if command == 'delete_indices' or command == 'delete_snapshots':
-            logger.info("Pruning Kibana-related indices to prevent accidental deletion.")
-            working_list.filter_kibana()
-
-        # If no filters are passed in opts, then try reading them from file opts.curator_json
-        if opts.filters is None:
-            filters = self._get_filters_from_json(opts.curator_json)
-        else:
-            filters = opts.filters
-
-        # Iterate through all the filters defined in JSON filter string
-        filters = '{"filters": [' + filters + ']}'
-        working_list.iterate_filters(json.loads(filters))
-
-        if not working_list.indices:
-            logger.error('No %s matched provided args: %s', act_on, opts)
-            print "ERROR. No {} found in Elasticsearch.".format(act_on)
-            sys.exit(99)
-
-        return working_list
-
     def invoke(self, command=None, act_on=None):
         """Invoke command through translating it to curator api call.
         """
         if act_on is None:
             raise ValueError("Requires act_on on `indices', `snapshots', or `cluster'")
 
-        # Get the working_list (index or snapshot) and apply filters
-        wl = self._filter_working_list(act_on, command, self._get_working_list(act_on, command))
+        # If no filters are passed in opts, then try reading them from file opts.curator_json
+        if self.opts.filters is None:
+            self.opts.filters = self._get_filters_from_json(self.opts.curator_json)
 
-        if act_on == 'indices' and command != 'snapshot':
-            return self.command_on_indices(act_on, command, wl)
-        elif (act_on == 'indices' and command == 'snapshot') or act_on == 'snapshots':
-            return self.command_on_snapshots(act_on, command, wl)
-        else:
-            return self.command_on_cluster(act_on, command)
+        return self.run(act_on, command)
