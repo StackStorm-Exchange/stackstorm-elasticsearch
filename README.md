@@ -26,21 +26,30 @@ You can also use dynamic values from the datastore. See the
 
 ## Curator based actions
 
-These actions operate similar to [curator](http://www.elastic.co/guide/en/elasticsearch/client/curator/current/) for Elasticsearch.
+These actions operate similar to [curator](https://www.elastic.co/guide/en/elasticsearch/client/curator/current/actions.html) for Elasticsearch.
 
 Action | Description
 ------ | -----------
+**cluster.cluster_routing** | This action changes the shard routing allocation for the selected indices.
 **indices.alias** | Add indices to or remove them from aliases.
 **indices.allocation** | Set routing allocation based on tags.
-**indices.bloom** | Disable the bloom filter cache for indices.
 **indices.close** | Close indices.
-**indices.delete** | Delete indices.
-**indices.open** | Open indices.
-**indices.optimize** | Optimize indices.
+**indices.create_index** | Create index.
+**indices.delete_indices** | Delete indices.
+**indices.forcemerge** | Perform a forceMerge on the selected indices, merging them to max_num_segments per shard.
+**indices.index_settings** | Update the specified index settings for the selected indices.
+**indices.open** | Opens the seleted indices.
+**indices.optimize** | Optimizes the selected indices.
+**indices.reindex** | Reindex selected indices.
 **indices.replicas** | Set replica count per shard.
+**indices.rollover** | Rolls an alias over to a new index when the existing index is considered to be too large or too old.
 **indices.show** | Show indices.
+**indices.shrink** | Shrink indices.
 **indices.snapshot** | Capture snapshot of indices.
-**snapshots.delete** | Delete snapshots.
+**search.body** | Search query using request body.
+**search.q** | Search query using query string as a parameter.
+**snapshots.delete_snapshots** | Delete selected snapshots from 'repository'.
+**snapshots.restore** | Restore all indices in the most recent snapshot with state SUCCESS.
 **snapshots.show** | Show snapshots.
 
 Actions invocation parameters will be described further. But for more detailed description what each action actually does please also refer to the [curator docs](http://www.elastic.co/guide/en/elasticsearch/client/curator/current/), it is more in-depth.
@@ -51,7 +60,7 @@ These parameters include general options such as elasticsearch host, port etc.
 
 Parameter | Description | Default
 ------------ | ------------ | ------------
-**host** | Specifies Elasticsearch host to connect to (**required**). | `none`
+**host** | Specifies Elasticsearch host to connect to. | `none`
 **url_prefix** | Specifies Elasticsearch http url prefix. | `/`
 **port** | Specifies port remote Elasticsearch instance is running on. | `9200`
 **use_ssl** | Set to `true` to connect to Elasticsearch through SSL. | `false`
@@ -61,35 +70,11 @@ Parameter | Description | Default
 **log_level** | Specifies log level \[critical\|error\|warning\|info\|debug\]. | `warn`
 **dry_run** | Set to `true` to enable *dry run* mode not performing any changes. | `false`
 
-### Indices/snapshots selection parameters
+### Filtering the list of indices and/or snapshots
 
-These parameters filter indices or snapshots when a command is being applied.
+Please see details on how to select indices or snapshots using filters:
 
-Parameter | Description | Details
------------- | ------------ | ------------
-**newer_than** | Filter indices or snapshots which are newer than n time_units. | integer value >= 0
-**older_than** | Filter indices or snapshots which are older than n time_units.  | integer value >= 0
-**prefix** | Prefix that indices or snapshots must match.
-**suffix** | Suffix that indices or snapshots must match.
-**time_unit** | Specifies the time interval between indices or snapshots \[hours\|days\|weeks\|months\]. | (default: `days`)
-**timestring** | Timestring is the pattern used for matching the dates in indices and snapshots. | ex. `%Y.%m.%d`, see. [python strftime formatting](https://docs.python.org/2/library/datetime.html#strftime-and-strptime-behavior)
-**regex** | Include only indices or snapshots matching the provided pattern.
-**exclude** | A comma separated list of patterns specifying indices or snapshots to exclude.
-
-### Indices selection only
-
-Parameter | Description | Details
------------- | ------------ | ------------
-**index** | Comma separated string of index names to be included into the operation. | Indices added with this option **will not** be filtered by any of the other index selection parameters.
-**all_indices** | Set to `true` to operate on all indices in a cluster. | This option overrides other filtering parameters except **exclude**.
-
-### Snapshot selection only
-
-Parameter | Description | Details
------------- | ------------ | ------------
-**snapshot** | Comma separated string of snapshot names to be included into the operation. | Snapshots added with this option **will not** be filtered by any of the other snapshot selection parameters.
-**all_snapshots** | Set to `true` to operate on all snapshots in a cluster. | This option overrides other filtering parameters except **exclude**.
-**repository** | Provides the repository name for snapshot operations (**required**).
+  https://www.elastic.co/guide/en/elasticsearch/client/curator/current/filtertype_space.html
 
 ## Search actions
 
@@ -182,16 +167,6 @@ st2 run elasticsearch.search.body host=elk body='{"query":{"match_all":{}}}' pre
 ```
 st2 run elasticsearch.search.q host=elk q='message:my_log_event' prefix=logstash
 ```
-
-## Changelog
-
-2016-01-08  pixelrebel  <github@pixelrebel.com>
-
-  - The pack seems to work with elasticsearch v2.1.1 (and curator v3.4.0).
-    So the pack now allows elasticsearch > v1.0.0 and < v2.2.0.
-    Please update python module elasticsearch-curator==3.4.0 before
-    upgrading this pack.
-  - Updated pack version to 0.2.0.
 
 ## License and Authors
 
