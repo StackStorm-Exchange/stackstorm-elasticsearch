@@ -3,11 +3,11 @@
 import elasticsearch
 import sys
 import logging
-from curator.api.utils import get_version, is_master_node
+from curator.utils import get_version, is_master_node
 
 # Elasticsearch versions supported
-version_max = (2, 4, 5)
-version_min = (1, 0, 0)
+version_max = (7, 0, 0)
+version_min = (5, 0, 0)
 logger = logging.getLogger(__name__)
 
 
@@ -88,10 +88,3 @@ def compact_dict(source_dict):
     Drop all elements equal to None
     """
     return {k: v for k, v in source_dict.items() if v is not None}
-
-
-def xstr(s):
-    """
-    IdiotOmatic xstr.
-    """
-    return '' if s is None else str(s)

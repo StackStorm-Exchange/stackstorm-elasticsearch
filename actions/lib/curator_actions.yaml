@@ -2,23 +2,28 @@
 - indices.show:
     description: "Show indices"
     parameters:
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -32,27 +37,33 @@
       all_indices:
         description: "Do not filter indices.  Act on all indices."
         type: "boolean"
+      # -->
 
 - snapshots.show:
     description: "Show snapshots"
     parameters:
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only snapshots newer than n time_units."
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
         type: "integer"
-      older_than:
-        description: "Include only snapshots older than n time_units."
-        type: "integer"
-      prefix:
-        description: "Include only snapshots beginning with prefix."
-      suffix:
-        description: "Include only snapshots ending with suffix."
-      timestring:
-        description: "Python strftime string to match your snapshot's definition, e.g. 20150715020304 would be %Y%m%d%H%M%S."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Snapshot selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Snapshot list to operate on."
         type: "array"
@@ -69,27 +80,33 @@
       all_snapshots:
         description: "Do not filter snapshots.  Act on all snapshots."
         type: "boolean"
+      # -->
 
-- indices.delete:
+- indices.delete_indices:
     description: "Delete indices"
     parameters:
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -103,34 +120,33 @@
       all_indices:
         description: "Do not filter indices.  Act on all indices."
         type: "boolean"
-      disk_space:
-        description: "Delete indices beyond DISK_SPACE gigabytes."
-        type: "string"
-      reverse:
-        description: "Only valid with disk_space. Affects sort order of the indices.  True means reverse-alphabetical (if dates are involved, older is deleted first)."
-        type: "boolean"
-        default: true
+      # -->
 
-- snapshots.delete:
+- snapshots.delete_snapshots:
     description: "Delete snapshots"
     parameters:
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only snapshots newer than n time_units."
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
         type: "integer"
-      older_than:
-        description: "Include only snapshots older than n time_units."
-        type: "integer"
-      prefix:
-        description: "Include only snapshots beginning with prefix."
-      suffix:
-        description: "Include only snapshots ending with suffix."
-      timestring:
-        description: "Python strftime string to match your snapshot's definition, e.g. 20150715020304 would be %Y%m%d%H%M%S."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Snapshot selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Snapshot list to operate on."
         type: "array"
@@ -147,13 +163,7 @@
       all_snapshots:
         description: "Do not filter snapshots.  Act on all snapshots."
         type: "boolean"
-      disk_space:
-        description: "Delete indices beyond DISK_SPACE gigabytes."
-        type: "string"
-      reverse:
-        description: "Only valid with disk_space. Affects sort order of the indices.  True means reverse-alphabetical (if dates are involved, older is deleted first)."
-        type: "boolean"
-        default: true
+      # -->
 
 - indices.snapshot:
     description: "Create snapshot of indices"
@@ -185,24 +195,29 @@
         description: "Don't wait for action completion more then the specified timeout."
         default: 21600
         type: "integer"
-      # <-- These are index selection parameters!
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -224,29 +239,41 @@
       name:
         description: "Alias name"
         required: true
+      add:
+        description: "Add to alias."
+        type: "object"
       remove:
         description: "Remove from alias rather than add."
+        type: "object"
+      extra_settings:
+        description: "The extra_settings option allows the addition of extra settings with the add directive. These settings are ignored for remove."
+        type: "object"
+      warn_if_no_indices:
+        description: "This setting specifies whether or not the alias action should continue with a warning or return immediately in the event that the filters in the add or remove section result in an empty index list."
+        default: false
+        type: "boolean"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
         default: false
         type: "boolean"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
-        type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -263,71 +290,50 @@
       # -->
 
 - indices.allocation:
-    description: "Index Allocation"
+    description: "Apply shard allocation filtering rules to the specified indices"
     parameters:
-      rule:
-        description: "Routing allocation rule to apply, e.g. tag=ssd"
+      key:
+        description: "The value of this setting should correspond to a node setting on one or more nodes in your cluster."
         required: true
-
-      # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
-        type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
-      exclude:
-        description: "Index list to exclude from the operation."
-        type: "array"
-        items:
-          type: "string"
-      index:
-        description: "Index list to operate on."
-        type: "array"
-        items:
-          type: "string"
-      all_indices:
-        description: "Do not filter indices.  Act on all indices."
+      value:
+        description: "The value of this setting should correspond to a node setting on one or more nodes in your cluster. For example, you might have set node.tag: myvalue. To match allocation in this case, set value to myvalue."
+      allocation_type:
+        description: "The value of this setting must be one of require, include, or exclude."
+        default: "require"
+      wait_for_completion:
+        description: "Wait for the shard routing to complete before continuing."
+        default: true
         type: "boolean"
-      # -->
-
-- indices.bloom:
-    description: "Disable bloom filter cache"
-    parameters:
-      delay:
-        description: "Pause *n* seconds after disabling bloom filter cache of an index."
+      max_wait:
+        description: "Number of seconds to wait for shard routing and reallocation to complete before giving up. A max_wait value of -1 will wait indefinitely."
+        default: 300
         type: "integer"
-        default: 0
+      wait_interval:
+        description: "Poll for completion every wait_interval seconds."
+        default: 10
+        type: "integer"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
-        type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -346,23 +352,31 @@
 - indices.close:
     description: "Close indices"
     parameters:
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      delete_aliases:
+        description: "If True, will delete any associated aliases before closing indices."
+        type: "boolean"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -376,27 +390,33 @@
       all_indices:
         description: "Do not filter indices.  Act on all indices."
         type: "boolean"
+      # -->
 
 - indices.open:
     description: "Open indices"
     parameters:
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -410,6 +430,7 @@
       all_indices:
         description: "Do not filter indices.  Act on all indices."
         type: "boolean"
+      # -->
 
 - indices.optimize:
     description: "Optimize indices"
@@ -426,25 +447,28 @@
         description: "Don't wait for action completion more then the specified timeout."
         default: 21600
         type: "integer"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
-        type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
-        type: "integer"
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"
@@ -467,25 +491,537 @@
         description: "Number of replicas the indices should have."
         type: "integer"
         required: true
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
 
       # <-- Indices selection
-      time_unit:
-        description: "Unit of time to reckon by [hours|days|weeks|months]."
-        default: "days"
-      newer_than:
-        description: "Include only indices newer than n time_units."
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
+      exclude:
+        description: "Index list to exclude from the operation."
+        type: "array"
+        items:
+          type: "string"
+      index:
+        description: "Index list to operate on."
+        type: "array"
+        items:
+          type: "string"
+      all_indices:
+        description: "Do not filter indices.  Act on all indices."
+        type: "boolean"
+      # -->
+
+- cluster.cluster_routing:
+    description: "Cluster routing"
+    parameters:
+      setting:
+        description: "Currently, the only acceptable value for setting is 'enable'. This is here in case that changes."
+        default: "enable"
+      routing_type:
+        description: "Type of routing to apply. Either 'allocation' or 'rebalance'"
+      value:
+        description: "Used only if 'setting' is 'enable'. Semi-dependent on 'routing_type'. Acceptable values for allocation and rebalance are 'all', 'primaries', and 'none' (string, not NoneType). If routing_type is allocation, this can also be 'new_primaries', and if rebalance, it can be 'replicas'."
+      wait_for_completion:
+        description: "Wait (or not) for the operation to complete before returning."
+        default: false
+        type: "boolean"
+      wait_interval:
+        description: "How long in seconds to wait between checks for completion."
         type: "integer"
-      older_than:
-        description: "Include only indices older than n  time_units."
+      max_wait:
+        description: "Maximum number of seconds to wait_for_completion"
         type: "integer"
-      prefix:
-        description: "Include only indices beginning with prefix."
-      suffix:
-        description: "Include only indices ending with suffix."
-      timestring:
-        description: "Python strftime string to match your index definition, e.g. 2015.07.15 would be %Y.%m.%d."
-      regex:
-        description: "Provide your own regex, e.g '^prefix-.*-suffix$'."
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
+      exclude:
+        description: "Index list to exclude from the operation."
+        type: "array"
+        items:
+          type: "string"
+      index:
+        description: "Index list to operate on."
+        type: "array"
+        items:
+          type: "string"
+      all_indices:
+        description: "Do not filter indices.  Act on all indices."
+        type: "boolean"
+      # -->
+
+- indices.create_index:
+    description: "Create index"
+    parameters:
+      name:
+        description: "A name, which can contain 'time.strftime()' strings"
+      extra_settings:
+        description: "A dict representing the 'settings' and 'mappings' for the index."
+        type: "object"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
+      exclude:
+        description: "Index list to exclude from the operation."
+        type: "array"
+        items:
+          type: "string"
+      index:
+        description: "Index list to operate on."
+        type: "array"
+        items:
+          type: "string"
+      all_indices:
+        description: "Do not filter indices.  Act on all indices."
+        type: "boolean"
+      # -->
+
+- indices.forcemerge:
+    description: "Force merge"
+    parameters:
+      max_num_segments:
+        description: "Number of segments per shard to forceMerge"
+        type: "integer"
+      delay:
+        description: "Number of seconds to delay between forceMerge operations"
+        type: "integer"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
+      exclude:
+        description: "Index list to exclude from the operation."
+        type: "array"
+        items:
+          type: "string"
+      index:
+        description: "Index list to operate on."
+        type: "array"
+        items:
+          type: "string"
+      all_indices:
+        description: "Do not filter indices.  Act on all indices."
+        type: "boolean"
+      # -->
+
+- indices.index_settings:
+    description: "Index settings"
+    parameters:
+      index_settings:
+        description: "A dictionary structure with one or more index settings to change."
+        type: "object"
+      ignore_unavailable:
+        description: "Whether specified concrete indices should be ignored when unavailable (missing or closed)"
+        type: "boolean"
+      preserve_existing:
+        description: "Whether to update existing settings. If set to True existing settings on an index remain unchanged. The default is False."
+        default: false
+        type: "boolean"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
+      exclude:
+        description: "Index list to exclude from the operation."
+        type: "array"
+        items:
+          type: "string"
+      index:
+        description: "Index list to operate on."
+        type: "array"
+        items:
+          type: "string"
+      all_indices:
+        description: "Do not filter indices.  Act on all indices."
+        type: "boolean"
+      # -->
+
+- indices.reindex:
+    description: "Reindex"
+    parameters:
+      request_body:
+        description: "The body to send to elasticsearch.ElasticSearch.reindex(), which must be complete and usable, as Curator will do no vetting of the request_body. If it fails to function, Curator will return an exception."
+        type: "string"
+      refresh:
+        description: "Whether to refresh the entire target index after the operation is complete. (default=True)"
+        default: true
+        type: "boolean"
+      requests_per_second:
+        description: "The throttle to set on this request in sub-requests per second. -1 means set no throttle as does unlimited which is the only non-float this accepts."
+      slices:
+        description: "The number of slices this task should be divided into. 1 means the task will not be sliced into subtasks. (default: 1)"
+        type: "integer"
+      timeout:
+        description: "The length in seconds each individual bulk request should wait for shards that are unavailable. (default: 60)"
+        type: "integer"
+      wait_for_active_shards:
+        description: "Sets the number of shard copies that must be active before proceeding with the reindex operation. (default: 1) means the primary shard only. Set to 'all' for all shard copies, otherwise set to any non-negative value less than or equal to the total number of copies for the shard (number of replicas + 1)"
+      wait_for_completion:
+        description: "Wait (or not) for the operation to complete before returning. (default: True)"
+        default: true
+        type: "boolean"
+      wait_interval:
+        description: "How long in seconds to wait between checks for completion."
+        type: "integer"
+      max_wait:
+        description: "Maximum number of seconds to wait_for_completion"
+        type: "integer"
+      remote_url_prefix:
+        description: "Optional url prefix, if needed to reach the Elasticsearch API (i.e., it's not at the root level)"
+      remote_ssl_no_validate:
+        description: "If True, do not validate the certificate chain. This is an insecure option and you will see warnings in the log output."
+        type: "boolean"
+      remote_certificate:
+        description: "Path to SSL/TLS certificate"
+      remote_client_cert:
+        description: "Path to SSL/TLS client certificate (public key)"
+      remote_client_key:
+        description: "Path to SSL/TLS private key"
+      remote_aws_key:
+        description: "AWS IAM Access Key (Only used if the requests-aws4auth python module is installed)"
+      remote_aws_secret_key:
+        description: "AWS IAM Secret Access Key (Only used if the requests-aws4auth python module is installed)"
+      remote_aws_region:
+        description: "AWS Region (Only used if the requests-aws4auth python module is installed"
+      remote_filters:
+        description: "Apply these filters to the remote client for remote index selection."
+        type: "object"
+      migration_prefix:
+        description: "When migrating, prepend this value to the index name."
+      migration_suffix:
+        description: "When migrating, append this value to the index name."
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
+      exclude:
+        description: "Index list to exclude from the operation."
+        type: "array"
+        items:
+          type: "string"
+      index:
+        description: "Index list to operate on."
+        type: "array"
+        items:
+          type: "string"
+      all_indices:
+        description: "Do not filter indices.  Act on all indices."
+        type: "boolean"
+      # -->
+
+- snapshots.restore:
+    description: "Restore"
+    parameters:
+      name:
+        description: "Name of the snapshot to restore. If no name is provided, it will restore the most recent snapshot by age."
+      indices:
+        description: "A list of indices to restore. If no indices are provided, it will restore all indices in the snapshot."
+        type: "array"
+        items:
+          type: "string"
+      include_aliases:
+        description: "If set to True, restore aliases with the indices. (default: False)"
+        default: false
+        type: "boolean"
+      ignore_unavailable:
+        description: "Ignore unavailable shards/indices. (default: False)"
+        default: false
+        type: "boolean"
+      include_global_state:
+        description: "Restore cluster global state with snapshot. (default: False)"
+        default: false
+        type: "boolean"
+      partial:
+        description: "Do not fail if primary shard is unavailable. (default: False)"
+        default: false
+        type: "boolean"
+      rename_pattern:
+        description: "A regular expression pattern with one or more captures, e.g. index_(.+)"
+      rename_replacement:
+        description: "A target index name pattern with $# numbered references to the captures in rename_pattern, e.g. restored_index_$1"
+      extra_settings:
+        description: "Extra settings, including shard count and settings to omit."
+        type: "object"
+      wait_for_completion:
+        description: "Wait (or not) for the operation to complete before returning. (default: True)"
+        default: true
+        type: "boolean"
+      wait_interval:
+        description: "How long in seconds to wait between checks for completion."
+        type: "integer"
+      max_wait:
+        description: "Maximum number of seconds to wait_for_completion"
+        type: "integer"
+      skip_repo_fs_check:
+        description: "Do not validate write access to repository on all cluster nodes before proceeding. (default: False). Useful for shared filesystems where intermittent timeouts can affect validation, but won't likely affect snapshot success."
+        default: false
+        type: "boolean"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
+      exclude:
+        description: "Index list to exclude from the operation."
+        type: "array"
+        items:
+          type: "string"
+      index:
+        description: "Index list to operate on."
+        type: "array"
+        items:
+          type: "string"
+      all_indices:
+        description: "Do not filter indices.  Act on all indices."
+        type: "boolean"
+      # -->
+
+- indices.rollover:
+    description: "Rollover"
+    parameters:
+      name:
+        description: "The name of the single-index-mapped alias to test for rollover conditions."
+      conditions:
+        description: "A dictionary of conditions to test"
+        type: "object"
+      extra_settings:
+        description: "Must either be 'None', or a dictionary of settings to apply to the new index on rollover. This is used in place of 'settings' in the Rollover API, mostly because it's already existent in other places here in Curator."
+        type: "object"
+      wait_for_active_shards:
+        description: "The number of shards expected to be active before returning."
+        type: "integer"
+      new_index:
+        description: "The new index name"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
+      exclude:
+        description: "Index list to exclude from the operation."
+        type: "array"
+        items:
+          type: "string"
+      index:
+        description: "Index list to operate on."
+        type: "array"
+        items:
+          type: "string"
+      all_indices:
+        description: "Do not filter indices.  Act on all indices."
+        type: "boolean"
+      # -->
+
+- indices.shrink:
+    description: "Shrink"
+    parameters:
+      shrink_node:
+        description: "The node name to use as the shrink target, or DETERMINISTIC, which will use the values in node_filters to determine which node will be the shrink node."
+      node_filters:
+        description: "A dictionary, representing the filters. If the value of the shrink_node is DETERMINISTIC, the values in 'node_filters' will be used while determining which node to allocate the shards on beore performing the shrink."
+      number_of_shards:
+        description: "The number of shards the shrunk index should have"
+        type: "integer"
+      number_of_replicas:
+        description: "The number of replicas for the shrunk index"
+        type: "integer"
+      shrink_prefix:
+        description: "Prepend the shrunk index with this value"
+      shrink_suffix:
+        description: "Append the value to the shrunk index (default: -shrink)"
+        default: "-shrink"
+      copy_aliases:
+        description: "Whether to copy each source index aliases to target index after shrinking. The aliases will be added to target index and deleted from source index at the same time. (default: False)"
+        default: false
+        type: "boolean"
+      delete_after:
+        description: "Whether to delete each index after shrinking. (default: True)"
+        default: true
+        type: "boolean"
+      post_allocation:
+        description: "A dictionary, with keys 'allocation_type', 'key', and 'value'. If populated, the 'allocation_type', 'key' and 'value' will be applied to the shrunk index to re-route it."
+        type: "object"
+      wait_for_active_shards:
+        description: "The number of shards expected to be active before returning."
+        type: "integer"
+      extra_settings:
+        description: "A dictionary where the permitted root keys are 'settings' and 'aliases'."
+        type: "object"
+      # NOTE: Release 5.3.0b1 of the elasticsearch curator documentation lists a SECOND
+      # wait_for_active_shards. Ignoring it here.
+      wait_for_completion:
+        description: "Wait (or not) for the operation to complete before returning. You should not normally change this, ever. (default: True)"
+        type: "boolean"
+      wait_interval:
+        description: "How long in seconds to wait between checks for completion."
+        type: "integer"
+      max_wait:
+        description: "Maximum number of seconds to wait_for_completion."
+        type: "integer"
+      ignore_empty_list:
+        description: "When set to true, the action will exit with an INFO level log message indicating such. If set to false, an ERROR level message will be logged and curator will exit with code 1."
+        default: false
+        type: "boolean"
+      timeout_override:
+        description: "snapshot, restore and forcemerge override this value to 21600 if unset. The close action will override this value to 180 if unset. All other actions have no default value."
+        type: "integer"
+      continue_if_exception:
+        description: "If set to true, Curator will attempt to continue on to the next action."
+        default: false
+        type: "boolean"
+      disable_action:
+        description: "If set to true, Curator will ignore the current action. The default value is false."
+        default: false
+        type: "boolean"
+
+      # <-- Indices selection
+      curator_json:
+        description: "Path to curator YAML file used to specify filters"
+        default: "~/.curator/curator.json"
+      filters:
+        description: "JSON formatted string of filters"
       exclude:
         description: "Index list to exclude from the operation."
         type: "array"

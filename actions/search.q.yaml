@@ -4,6 +4,9 @@ enabled: true
 entry_point: search.py
 name: search.q
 parameters:
+  filters:
+    description: JSON formatted string of filters
+    type: string
   action:
     default: search.q
     immutable: true
@@ -60,12 +63,6 @@ parameters:
     default: false
     description: Only operate on elected master node.
     type: boolean
-  newer_than:
-    description: Include only indices newer than n time_units.
-    type: integer
-  older_than:
-    description: Include only indices older than n  time_units.
-    type: integer
   port:
     description: Elasticsearch port.
     type: string

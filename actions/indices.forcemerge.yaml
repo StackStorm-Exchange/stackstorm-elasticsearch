@@ -1,19 +1,32 @@
 ---
-description: Delete indices
+description: Force merge
 enabled: true
 entry_point: curator_runner.py
-name: indices.delete
+name: indices.forcemerge
 parameters:
   action:
-    default: indices.delete
+    default: indices.forcemerge
     immutable: true
     type: string
   all_indices:
     description: Do not filter indices.  Act on all indices.
     type: boolean
-  disk_space:
-    description: Delete indices beyond DISK_SPACE gigabytes.
+  continue_if_exception:
+    default: false
+    description: If set to true, Curator will attempt to continue on to the next action.
+    type: boolean
+  curator_json:
+    default: ~/.curator/curator.json
+    description: Path to curator YAML file used to specify filters
     type: string
+  delay:
+    description: Number of seconds to delay between forceMerge operations
+    type: integer
+  disable_action:
+    default: false
+    description: If set to true, Curator will ignore the current action. The default
+      value is false.
+    type: boolean
   dry_run:
     default: false
     description: Do not perform any changes.
@@ -23,6 +36,9 @@ parameters:
     items:
       type: string
     type: array
+  filters:
+    description: JSON formatted string of filters
+    type: string
   host:
     description: Elasticsearch host.
     required: true
@@ -30,6 +46,12 @@ parameters:
   http_auth:
     description: 'Use Basic Authentication ex: user:pass'
     type: string
+  ignore_empty_list:
+    default: false
+    description: When set to true, the action will exit with an INFO level log message
+      indicating such. If set to false, an ERROR level message will be logged and
+      curator will exit with code 1.
+    type: boolean
   index:
     description: Index list to operate on.
     items:
@@ -43,11 +65,8 @@ parameters:
     default: false
     description: Only operate on elected master node.
     type: boolean
-  newer_than:
-    description: Include only indices newer than n time_units.
-    type: integer
-  older_than:
-    description: Include only indices older than n  time_units.
+  max_num_segments:
+    description: Number of segments per shard to forceMerge
     type: integer
   operation_timeout:
     default: '{{timeout}}'
@@ -58,32 +77,15 @@ parameters:
   port:
     description: Elasticsearch port.
     type: string
-  prefix:
-    description: Include only indices beginning with prefix.
-    type: string
-  regex:
-    description: Provide your own regex, e.g '^prefix-.*-suffix$'.
-    type: string
-  reverse:
-    default: true
-    description: Only valid with disk_space. Affects sort order of the indices.  True
-      means reverse-alphabetical (if dates are involved, older is deleted first).
-    type: boolean
-  suffix:
-    description: Include only indices ending with suffix.
-    type: string
-  time_unit:
-    default: days
-    description: Unit of time to reckon by [hours|days|weeks|months].
-    type: string
   timeout:
     default: 600
     description: Don't wait for action completion more then the specified timeout.
     type: integer
-  timestring:
-    description: Python strftime string to match your index definition, e.g. 2015.07.15
-      would be %Y.%m.%d.
-    type: string
+  timeout_override:
+    description: snapshot, restore and forcemerge override this value to 21600 if
+      unset. The close action will override this value to 180 if unset. All other
+      actions have no default value.
+    type: integer
   url_prefix:
     description: Elasticsearch http url prefix.
     type: string

@@ -1,15 +1,12 @@
 ---
-description: Index Aliasing
+description: Index settings
 enabled: true
 entry_point: curator_runner.py
-name: indices.alias
+name: indices.index_settings
 parameters:
   action:
-    default: indices.alias
+    default: indices.index_settings
     immutable: true
-    type: string
-  add:
-    description: Add to alias.
     type: string
   all_indices:
     description: Do not filter indices.  Act on all indices.
@@ -36,10 +33,6 @@ parameters:
     items:
       type: string
     type: array
-  extra_settings:
-    description: The extra_settings option allows the addition of extra settings with
-      the add directive. These settings are ignored for remove.
-    type: object
   filters:
     description: JSON formatted string of filters
     type: string
@@ -56,11 +49,18 @@ parameters:
       indicating such. If set to false, an ERROR level message will be logged and
       curator will exit with code 1.
     type: boolean
+  ignore_unavailable:
+    description: Whether specified concrete indices should be ignored when unavailable
+      (missing or closed)
+    type: boolean
   index:
     description: Index list to operate on.
     items:
       type: string
     type: array
+  index_settings:
+    description: A dictionary structure with one or more index settings to change.
+    type: object
   log_level:
     default: warn
     description: Log level [critical|error|warning|info|debug].
@@ -69,10 +69,6 @@ parameters:
     default: false
     description: Only operate on elected master node.
     type: boolean
-  name:
-    description: Alias name
-    required: true
-    type: string
   operation_timeout:
     default: '{{timeout}}'
     description: Elasticsearch operation timeout in seconds. (It's equal to action
@@ -82,9 +78,11 @@ parameters:
   port:
     description: Elasticsearch port.
     type: string
-  remove:
-    description: Remove from alias rather than add.
-    type: string
+  preserve_existing:
+    default: false
+    description: Whether to update existing settings. If set to True existing settings
+      on an index remain unchanged. The default is False.
+    type: boolean
   timeout:
     default: 600
     description: Don't wait for action completion more then the specified timeout.
@@ -100,11 +98,5 @@ parameters:
   use_ssl:
     default: false
     description: Connect to Elasticsearch through SSL.
-    type: boolean
-  warn_if_no_indices:
-    default: false
-    description: This setting specifies whether or not the alias action should continue
-      with a warning or return immediately in the event that the filters in the add
-      or remove section result in an empty index list.
     type: boolean
 runner_type: python-script
