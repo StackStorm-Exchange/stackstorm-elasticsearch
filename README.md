@@ -74,7 +74,7 @@ Parameter | Description | Default
 
 Please see details on how to select indices or snapshots using filters:
 
-  https://www.elastic.co/guide/en/elasticsearch/client/curator/current/filtertype_space.html
+  https://www.elastic.co/guide/en/elasticsearch/client/curator/current/filters.html
 
 ## Search actions
 
