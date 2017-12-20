@@ -241,10 +241,8 @@
         required: true
       add:
         description: "Add to alias."
-        type: "object"
       remove:
         description: "Remove from alias rather than add."
-        type: "object"
       extra_settings:
         description: "The extra_settings option allows the addition of extra settings with the add directive. These settings are ignored for remove."
         type: "object"

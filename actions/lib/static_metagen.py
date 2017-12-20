@@ -52,9 +52,9 @@ class StaticMetagen(object):
                 "type": "string"
             },
             "log_level": {
-                "description": "Log level [critical|error|warning|info|debug].",
+                "description": "Log level [CRITICAL|ERROR|WARNING|INFO|DEBUG].",
                 "type": "string",
-                "default": "warn"
+                "default": "WARNING"
             },
             "dry_run": {
                 "description": "Do not perform any changes.",

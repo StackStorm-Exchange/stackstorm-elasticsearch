@@ -50,8 +50,8 @@ parameters:
       curator will exit with code 1.
     type: boolean
   log_level:
-    default: warn
-    description: Log level [critical|error|warning|info|debug].
+    default: WARNING
+    description: Log level [CRITICAL|ERROR|WARNING|INFO|DEBUG].
     type: string
   master_only:
     default: false
