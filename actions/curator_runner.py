@@ -9,7 +9,7 @@ logger = logging.getLogger(__name__)
 
 class CuratorRunner(CuratorAction):
 
-    def run(self, action=None, log_level='warn', dry_run=False, operation_timeout=600, **kwargs):
+    def run(self, action=None, log_level='WARNING', dry_run=False, operation_timeout=600, **kwargs):
         """Curator based action entry point
         """
         self._action = action
