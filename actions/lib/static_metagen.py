@@ -121,6 +121,7 @@ class StaticMetagen(object):
                 yield alias_manifest
             yield manifest
 
+
 metagen = StaticMetagen()
 metagen.generate_from_file('lib/curator_actions.yaml')
 # print yaml.dump(metagen.meta_actions)
