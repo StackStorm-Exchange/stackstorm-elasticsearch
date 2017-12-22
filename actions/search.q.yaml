@@ -45,7 +45,7 @@ parameters:
     type: array
   host:
     description: Elasticsearch host.
-    required: true
+    required: false
     type: string
   http_auth:
     description: 'Use Basic Authentication ex: user:pass'
@@ -56,8 +56,8 @@ parameters:
       type: string
     type: array
   log_level:
-    default: warn
-    description: Log level [critical|error|warning|info|debug].
+    default: WARNING
+    description: Log level [CRITICAL|ERROR|WARNING|INFO|DEBUG].
     type: string
   master_only:
     default: false

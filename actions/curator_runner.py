@@ -19,6 +19,13 @@ class CuratorRunner(CuratorAction):
             'dry_run': dry_run,
         })
 
+        config = EasyDict(self.config)
         self.config = EasyDict(kwargs)
+
+        if config.get('host') is not None:
+            self.config.update({'host': config.get('host')})
+        if config.get('port') is not None:
+            self.config.update({'port': config.get('port')})
+
         self.set_up_logging()
         self.do_command()

@@ -26,7 +26,7 @@ class ESBaseAction(Action):
         """
         Set log_level. Default is to display warnings.
         """
-        log_level = self.config.log_level or 'warn'
+        log_level = self.config.get('log_level', 'WARNING')
         numeric_log_level = getattr(logging, log_level.upper(), None)
         if not isinstance(numeric_log_level, int):
             raise ValueError('Invalid log level: {0}'.format(log_level))

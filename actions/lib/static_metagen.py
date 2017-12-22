@@ -14,7 +14,7 @@ class StaticMetagen(object):
             "host": {
                 "description": "Elasticsearch host.",
                 "type": "string",
-                "required": True
+                "required": False
             },
             "url_prefix": {
                 "description": "Elasticsearch http url prefix.",
