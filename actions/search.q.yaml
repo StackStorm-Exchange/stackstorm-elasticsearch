@@ -45,7 +45,6 @@ parameters:
     type: array
   host:
     description: Elasticsearch host.
-    required: false
     type: string
   http_auth:
     description: 'Use Basic Authentication ex: user:pass'
