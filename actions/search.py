@@ -17,12 +17,20 @@ class SearchRunner(ESBaseAction):
         super(SearchRunner, self).__init__(config=config)
         self._return_object = False
 
-    def run(self, action=None, log_level='warn', operation_timeout=600, **kwargs):
+    def run(self, action=None, log_level='WARNING', operation_timeout=600, **kwargs):
         kwargs.update({
             'timeout': int(operation_timeout),
             'log_level': log_level
         })
+
+        config = EasyDict(self.config)
         self.config = EasyDict(kwargs)
+
+        if config.get('host') is not None:
+            self.config.update({'host': config.get('host')})
+        if config.get('port') is not None:
+            self.config.update({'port': config.get('port')})
+
         self.set_up_logging()
 
         self._return_object = kwargs.get('return_object', False)
