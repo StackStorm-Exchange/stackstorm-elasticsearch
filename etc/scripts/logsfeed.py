@@ -1,6 +1,8 @@
 #!/usr/bin/env python
 # flake8: noqa
 # encoding: utf-8
+from __future__ import print_function
+
 import os
 import datetime
 import time
@@ -79,7 +81,7 @@ if __name__ == "__main__":
         beg = datetime.datetime.now()
         rate = INT/NUM
         while fed < NUM and slept < INT:
-            print slept
+            print(slept)
             now = datetime.datetime.now()
             wait = random.uniform(rate*0.7, rate*1.5)
 

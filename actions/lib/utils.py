@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+from __future__ import print_function
 
 import elasticsearch
 import sys
@@ -22,8 +23,8 @@ def check_version(client):
         vmin = ".".join(map(str, version_min))
         vmax = ".".join(map(str, version_max))
         vnum = ".".join(map(str, version_number))
-        print 'Expected Elasticsearch version range > {} < {}'.format(vmin, vmax)
-        print 'ERROR: Incompatible with version {} of Elasticsearch.  Exiting.'.format(vnum)
+        print('Expected Elasticsearch version range > {} < {}'.format(vmin, vmax))
+        print('ERROR: Incompatible with version {} of Elasticsearch.  Exiting.'.format(vnum))
         sys.exit(1)
 
 
@@ -79,7 +80,7 @@ def get_client(host, port=9200, url_prefix=None, http_auth=None, use_ssl=False,
         check_master(client, master_only=master_only)
         return client
     except Exception as e:  # noqa
-        print "ERROR: Connection failure: {0}".format(e.message)
+        print("ERROR: Connection failure: {0}".format(e.message))
         sys.exit(1)
 
 

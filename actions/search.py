@@ -1,4 +1,5 @@
 # pylint: disable=no-member
+from __future__ import print_function
 
 from easydict import EasyDict
 from lib.esbase_action import ESBaseAction
@@ -84,7 +85,7 @@ class SearchRunner(ESBaseAction):
         kwargs = {}
         if self.config.pretty:
             kwargs = {'indent': 4}
-        print json.dumps(data, **kwargs)
+        print(json.dumps(data, **kwargs))
 
         if data['hits']['total'] > 0:
             sys.exit(0)
