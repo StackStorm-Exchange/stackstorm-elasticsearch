@@ -1,3 +1,9 @@
+
+# 1.1.1
+
+- Python 3 fixups
+- Add explicit support for Python 2 and 3
+
 # 1.1.0
 
 - Adding support for use values from config file.
