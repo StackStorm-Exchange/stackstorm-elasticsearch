@@ -40,7 +40,21 @@ class ElasticsearchCountSensor(PollingSensor):
         data = self.es.search(index=self.index, body=query_payload)
 
         hits = data.get('hits', None)
-        if hits.get('total', 0) > self.count_threshold:
+        if hits is None:
+            raise RuntimeError('No hits in search response.')
+
+        total = hits.get('total', None)
+        if total is None:
+            raise RuntimeError('Total not present in search response. Did you disable track_total_hits?\nhttps://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-7.0.html#hits-total-omitted-if-disabled')
+
+        if isinstance(int, total):
+            hit_count = total
+        elif isinstance(dict, total):  # for Elasticsearch >= 7.0
+            hit_count = total['value']
+        else:
+            raise RuntimeError('Unsupported type of hit.total')
+
+        if hit_count > self.count_threshold:
             payload = dict()
             payload['results'] = hits
             payload['results']['query'] = query_payload

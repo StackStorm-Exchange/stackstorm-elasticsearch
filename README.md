@@ -154,7 +154,12 @@ st2 run elasticsearch.snapshots.delete host=elk repository=my_backup all_indices
 
 ### Querying Elasticsearch
 
-On successful search (*total hits > 0*) query actions exit with *return code* == 0, if no documents have been found *return code* == 1. In all other case such as execution exceptions *return code* is 99.
+| Return Code | Reason                                                      |
+|-------------|-------------------------------------------------------------|
+| `0`         | Successful search (total hits > 0 or returned hits > 0)     |
+| `1`         | No documents found (total hits == 0)                        |
+| `2`         | `hits.total` not present in response and returned hits == 0 |
+| `99`        | Other execution errors                                      |
 
 Let's look at a few examples:
 
