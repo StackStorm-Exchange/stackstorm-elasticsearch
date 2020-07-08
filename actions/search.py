@@ -8,7 +8,6 @@ import logging
 import sys
 import elasticsearch
 import json
-import sys
 
 logger = logging.getLogger(__name__)
 
@@ -88,8 +87,9 @@ class SearchRunner(ESBaseAction):
             kwargs = {'indent': 4}
         print(json.dumps(data, **kwargs))
 
-        # in ElasticSearch 7.0 hits.total becomes an object and may not even be present when track_total_hits is false
-        # see https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-7.0.html#hits-total-now-object-search-response
+        # in ElasticSearch 7.0 hits.total becomes an object and may not even
+        # be present when track_total_hits is false see:
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-7.0.html#hits-total-now-object-search-response # noqa
         if 'total' in data['hits']:
             if isinstance(data['hits']['total'], int):
                 hit_value = data['hits']['total']
