@@ -45,7 +45,9 @@ class ElasticsearchCountSensor(PollingSensor):
 
         total = hits.get('total', None)
         if total is None:
-            raise RuntimeError('Total not present in search response. Did you disable track_total_hits?\nhttps://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-7.0.html#hits-total-omitted-if-disabled')
+            raise RuntimeError('Total not present in search response.' +
+                               'Did you disable track_total_hits?\n' +
+                               'https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-7.0.html#hits-total-omitted-if-disabled')  # noqa
 
         if isinstance(int, total):
             hit_count = total
