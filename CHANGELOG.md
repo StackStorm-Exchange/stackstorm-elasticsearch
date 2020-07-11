@@ -1,3 +1,6 @@
+# 1.2.0
+
+- Add support for Elasticsearch 7.x
 
 # 1.1.1
 

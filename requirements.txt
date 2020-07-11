@@ -1,2 +1,2 @@
-elasticsearch-curator==5.4.0
 easydict
+elasticsearch-curator==5.8.1

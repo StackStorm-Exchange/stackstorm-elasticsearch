@@ -87,7 +87,21 @@ class SearchRunner(ESBaseAction):
             kwargs = {'indent': 4}
         print(json.dumps(data, **kwargs))
 
-        if data['hits']['total'] > 0:
-            sys.exit(0)
-        else:
-            sys.exit(1)
+        # in ElasticSearch 7.0 hits.total becomes an object and may not even
+        # be present when track_total_hits is false see:
+        # https://www.elastic.co/guide/en/elasticsearch/reference/current/breaking-changes-7.0.html#hits-total-now-object-search-response # noqa
+        if 'total' in data['hits']:
+            if isinstance(data['hits']['total'], int):
+                hit_value = data['hits']['total']
+            elif isinstance(data['hits']['total'], dict):
+                hit_value = data['hits']['total']['value']
+            else:
+                print('Unsupported data type for `hits.total`', file=sys.stderr)
+                sys.exit(99)
+
+            if hit_value == 0:
+                sys.exit(1)
+        elif len(data['hits']['hits']) == 0:
+            sys.exit(2)
+
+        sys.exit(0)
