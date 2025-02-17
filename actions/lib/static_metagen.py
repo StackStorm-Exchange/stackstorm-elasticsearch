@@ -90,7 +90,7 @@ class StaticMetagen(object):
         if meta_file is None:
             return None
         with open(meta_file) as fh:
-            actions = yaml.load(fh.read())
+            actions = yaml.safe_load(fh.read())
         for manifest in self._merge_actions(actions):
             fh = open('{0}.yaml'.format(manifest['name']), 'w')
             fh.write('---\n')

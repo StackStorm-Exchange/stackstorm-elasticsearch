@@ -1,4 +1,8 @@
 
+# 2.0.1
+
+* Fixed CI errors
+
 # 2.0.0
 
 * Drop Python 2.7 support
